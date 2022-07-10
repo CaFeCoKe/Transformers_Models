@@ -34,3 +34,15 @@
   NSP의 유무로 따진 성능에서는 NSP를 제거한 모델이 약간 더 향상된 성능을 보여준다. 이중에 Doc-Sentences가 더 높은 성능을 나타냈지만 batch size가 동적으로 변하기 떄문에 RoBERTa 논문에서는 이 부분에 있어 일관성 있는 설정을 위해 Full-Sentences의 입력 형태를 사용한다.
 <br><br>
 - Training with Large Batches
+  - 연구 동향 : 더 큰 batch size(large-mini-batch)와 이에 따른 적절한 Learning rate를 이용하면 optimization 속도 뿐만 아니라 최종 테스크의 성능도 향상된다.
+  <br><br>
+  - 동일한 계산 비용을 가지도록 여러 batch size로 실험
+    - 기존 BERT와 동일한 1M의 step과 256 sequence의 batch size
+    - 125K의 step과 2K sequence의 batch size
+    - 31K의 step과 8K sequence의 batch size
+  <br><br>
+  - 결과 <br><br>
+  ![batch](https://user-images.githubusercontent.com/86700191/178133936-61e5bc37-6951-44b9-a52e-541261e3876d.PNG) <br><br>
+  더 큰 batch size로 학습하면 masked language modeling의 목표에 대한 복잡성과 최종 작업 정확도가 향상되었다. 그리고 분산된 데이터에 대해 병력 학습을 하므로 병렬화에 유리하다. RoBERTa의 논문에서는 이후 실험에 대해 8K의 batch size로 설정한다.
+<br><br>
+- Text Encoding
