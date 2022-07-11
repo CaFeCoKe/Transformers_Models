@@ -46,3 +46,28 @@
   더 큰 batch size로 학습하면 masked language modeling의 목표에 대한 복잡성과 최종 작업 정확도가 향상되었다. 그리고 분산된 데이터에 대해 병력 학습을 하므로 병렬화에 유리하다. RoBERTa의 논문에서는 이후 실험에 대해 8K의 batch size로 설정한다.
 <br><br>
 - Text Encoding
+  - Byte-pair Encoding (BPE) : Word 단위와 Character 단위의 중간(hybrid)에 있는 text encoding 방식이다. 입력 텍스트를 sub-word unit들로 나누는데 이는 큰 학습 코퍼스의 통계치에 의해 결정된다.
+  <br><br>
+  - 기존 BERT의 Tokenizer : 학습 코퍼스에 휴리스틱한 토크나이징을 진행하고 30K 크기의 character-level BPE를 사용한다. (WordPiece)
+  <br><br>
+  - RoBERTa의 Tokenizer : 입력 텍스트의 추가 전처리나 토크나이징 없이 50K 크기의 sub-word unit을 포함한 byte-level BPE를 사용한다. 이는 GPT에서 사용하는 토크나이저와 같다. <br>
+  선행 연구에서 byte-level이 character-level보다 일부 작업에서 약간 더 낮은 작업 성능을 보였으나 universal encoding의 이점이 성능 저하보다 더 크다고 판단하여 RoBERTa의 토크나이저로 byte-level BPE를 선택하였다.
+<br><br>
+- Data
+  - 기존 BERT (BERT-LARGE)의 pre-training data : 16GB
+    - English Wikipedia & English Wekipedia (16G)
+  <br><br>
+  - RoBERTa의 pre-training data : 160GB
+    - English Wikipedia & English Wekipedia (16G)
+    - CC-News (Common Crawl News corpus, 76G): 2016.9 - 2019.2 까지 뉴스 기사를 크롤링 한 것으로 약 63M개의 뉴스 기사를 포함한다.. 
+    - Open Web Text (38G): reddit에서 up투표를 3이상 받은 공유된 URL의 내용을 크롤링 한 것이다. (GPT에서도 이용하엿음)
+    - Stories (31G): 크롤링된 데이터로 story-like style의 형식을 가진다.
+  <br><br>
+  - 결과 <br><br>
+  ![dataset](https://user-images.githubusercontent.com/86700191/178205392-bbecd178-7d7b-4ac7-a937-c694e5685dd1.PNG) <br><br>
+  BERT-LARGE와 같은 데이터셋으로 실행한 결과에서 RoBERTa가 성능이 더 높게나와 디자인(모델) 선택의 중요성을 확인할 수 있다. 또한, 추가적인 데이터셋으로 학습 시에도 성능이 더 높게 나오며 이로 인해 사전 훈련에서 데이터 크기와 다양성의 중요성을 확인할 수 있다.
+  마지막으로 사전 훈련 step을 늘림으로써 성능이 또 다시 높아지게 되었고, 특히나 가장 오랫동안 훈련시킨 모델에 대해 Overfit이 발생하지 않은 것을 보아 추가 훈련의 이점을 확인 할 수 있다.
+<br><br>
+- RoBERTa 요약
+  - 이전에 간과하고 넘어간 설계(hyper-parameter)의 중요성이 강조되어 BERT가 아직 Undertrain 되어있다는 사실을 알렸다.
+  - hyper-parameter 튜닝을 통해 기존 BERT 보다 향상된 성능을 보이면서, BERT 이후 나온 모델(XLNet 등)과의 비교에서 SOTA를 달성함으로써 Multi-task finetuning이 필수적이 아님을 확인하였다.
