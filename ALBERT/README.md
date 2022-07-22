@@ -27,11 +27,19 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
 <br><br>
 - The Elements of ALBERT
   - Model Architecture Choices : ALBERT의 backbone은 GELU 비선형성을 가진 트랜스포머 인코더를 사용한다는 점에서 BERT와 유사하다. BERT 표기법에 따라 어휘 임베딩 크기를 E로, 인코더 레이어의 수를 L로, 은닉층의 크기를 H로 표기한다.  feed-forward/filter의 크기를 4H, attention heads의 수를 H/64로 설정하고 다음 세가지 아이디어를 반영한다.
-    - Factorized embedding parameterization
+    - Factorized embedding parameterization : BERT와 이후 후속 연구들에서 WordPiece Embedding의 차원(E)과 Contextual Embedding의 차원(H)이 같은 크기를 가졌다. 모델링 관점에서 WordPiece 임베딩은 context-independent representations(문맥 독립적인 표현)을 학습하는 반면, 은닉층 임베딩은 context-dependent representations(문맥 의존적인 표현)을 학습한다. <br>
+    실용적인 관점에서 일반적으로 vocabulary size V가 클수록 좋다. E ≡ H일때, H의 크기를 증가시키면 크기가 V × E인 임베딩 행렬의 크기가 증가하기 때문에 수십억개의 parameter가 있는 모델이 쉽게 생성될 수 있으며, 대부분은 training에서 드물게 업데이트 된다. <br>
+    ALBERT는 embedding parameter를 factorization(인수 분해)하여 두 개의 작은 matrices로 분해한다. 이를 통해 O(V × H)였던 것을 O(V × E + E × H)로 바꾸면서 임베딩 파라미터를 줄였다. 이것은 H > E일 때 중요하며,  모든 단어 조각에 대해 동일한 E를 사용한다. 이 방법은 각 단어에 대한 각각 다른 임베딩 크기를 갖는 whole-word embedding에 비해 문서 전체에 훨씬 균등하게 분포되기 때문이다.
     <br><br>
-    - Cross-layer parameter sharing
+    - Cross-layer parameter sharing : 파라미터 공유 방법은 계층 간 피드 포워드 네트워크(FFN)의 파라미터만 공유하거나 attention의 파라미터만 공유 하는 방법 등이 있는데, ALBERT는 계층 간의 모든 파라미터를 공유하는 것을 사용한다.<br>
+      - BERT-large 및 ALBERT-large에 대한 각 레이어의 입력 및 출력 임베딩의 L2 거리와 코사인 유사성(정도의 관점에서)
+      ![L2_cosine](https://user-images.githubusercontent.com/86700191/180207183-7e7c9e85-4ba0-4005-a333-589dbf8a7714.PNG) <br>
+      BERT는 진동, ALBERT는 수렴된다는 점을 볼 때 계층에서 계층으로의 전환이 BERT보다 ALERT의 경우 훨씬 더 매끄럽다는 것을 볼 수 있다. 이러한 결과는 weight-sharing가 네트워크 파라미터를 안정화하는 데 영향을 미친다는 것을 보여준다.
     <br><br>
-    - Inter-sentence coherence loss
+    - Inter-sentence coherence loss (문장 간 일관성 loss) : BERT는 두 가지 loss(Masked LM + Next Sentence Prediction)를 이용한다. NSP 목표는 문장 쌍 간의 관계에 대한 추론이 필요한 자연어 추론(NLI)과 같은 다운스트림 작업에서 성능을 향상시키기 위해 설계되었으나 후속 연구에서 NSP의 영향을 신뢰할 수 없다고 판단하고 제거되었다.
+    ALBERT 저자들은 NSP의 비효과적인 이유가 주제 예측(topic prediction)이 일관성 예측(coherence prediction)에 비해 쉽고, MLM loss와 겹치기 떄문이라 보았다. <br>
+    문장 간 모델링이 언어 이해의 중요한 측면이지만 주제 예측을 피하고 대신 inter-sentence coherence(문장 간 일관성)를 모델링하는 데 중점을 두는 SOP loss(문장 순서 예측(SOP) 손실)을 사용한다. SOP loss는 동일한 문서에서 두 개의 연속 segment를 positive sample로 사용(BERT와 동일), 두 개의 segment의 순서가 바뀐것은 negative sample로 사용한다.
+    이를 통해 모델은 담화 수준의 일관성 속성에 대해 더 세분화된 차이를 학습해야 하며 NSP가 풀어내지 못하는 과제와 NSP가 풀어내는 과제를 모두 SOP가 풀어내는 결과를 내면서 multi-sentence encoding tasks(다중 문장 인코딩 작업)에 대한 다운스트림 작업 성능을 지속적으로 향상시켰다.
   <br><br>
   - Model setup :
 <br><br>
