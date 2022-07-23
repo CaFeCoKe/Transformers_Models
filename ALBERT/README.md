@@ -5,12 +5,12 @@
 ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 위해 나온 언어 모델이다.
 <br><br>
 - ALBERT가 제안하는 방법
-  - Two parameter reduction : 성능을 크게 손상시키지 않으면서 BERT에 대한 파라미터 수를 크게 줄여 파라미터의 효율성을 향상시킨다. BERT-large와 유사한 ALBERT 구성은 매개 변수가 18배 더 적고 약 1.7배 더 빠르게 훈련할 수 있다.
+  - Two parameter reduction : 성능을 크게 손상시키지 않으면서 BERT에 대한 파라미터 수를 크게 줄여 파라미터의 효율성을 향상시킨다. BERT-large와 유사한 ALBERT 구성은 파라미터가 18배 더 적고 약 1.7배 더 빠르게 훈련할 수 있다.
     - factorized embedding parameterization (인수분해 임베딩 매개변수화) : 큰 어휘 임베딩 행렬을 두 개의 작은 행렬로 분해하여 은닉층의 크기와 어휘 임베딩의 크기를 분리하게 되면 어휘 임베딩의 파라미터 크기를 크게 늘리지 않고도 hidden size를 쉽게 늘릴 수 있다.
     - cross-layer parameter sharing (교차 계층 파라미터 공유) : 파라미터가 네트워크의 깊이에 따라 증가하는 것을 방지한다.
   <br><br>
   - sentence-order prediction (SOP) : 문장 순서 예측으로 inter-sentence coherence(문장 간의 일관성)에 중점을 두고 있으며. BERT에서 제안된 next sentence prediction (NSP)의 비효과적인 부분을 해결 할 수 있게 설계가 되어있다. 
-  SOP 도입으로 BERT-large보다 더 적은 매개 변수를 여전히 가지고 있지만 훨씬 더 나은 성능을 달성하는 훨씬 더 큰 구성으로 확장할 수 있게 되었다.
+  SOP 도입으로 BERT-large보다 더 적은 파라미터를 여전히 가지고 있지만 훨씬 더 나은 성능을 달성하는 훨씬 더 큰 구성으로 확장할 수 있게 되었다.
 <br><br>
 - Related Work
   - Scaling up Representation Learning for Natural Language (자연어를 위한 표현 학습 스케일 업) : 자연어의 학습 표현은 광범위한 NLP 작업에 유용한 것으로 나타났다. 논문 기준 2년동안 가장 큰 변화는 사전 훈련 단어 임베딩에서 전체 네트워크 사전 훈련으로 전환한 후 작업별 미세조정을 한다는 것이다.
@@ -41,5 +41,25 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
     문장 간 모델링이 언어 이해의 중요한 측면이지만 주제 예측을 피하고 대신 inter-sentence coherence(문장 간 일관성)를 모델링하는 데 중점을 두는 SOP loss(문장 순서 예측(SOP) 손실)을 사용한다. SOP loss는 동일한 문서에서 두 개의 연속 segment를 positive sample로 사용(BERT와 동일), 두 개의 segment의 순서가 바뀐것은 negative sample로 사용한다.
     이를 통해 모델은 담화 수준의 일관성 속성에 대해 더 세분화된 차이를 학습해야 하며 NSP가 풀어내지 못하는 과제와 NSP가 풀어내는 과제를 모두 SOP가 풀어내는 결과를 내면서 multi-sentence encoding tasks(다중 문장 인코딩 작업)에 대한 다운스트림 작업 성능을 지속적으로 향상시켰다.
   <br><br>
-  - Model setup :
+  - Model setup : 위와 같은 설계 선택으로 ALBERT의 파라미터는 BERT에 비해 훨씬 적다.<br>
+  ![compare](https://user-images.githubusercontent.com/86700191/180598149-4e495615-8bd8-4e9a-8fc2-c203436bf9de.PNG) <br>
+  ALBERT-large와 BERT-large를 비교하자면 각각 파라미터의 수가 18M 대 334M로 약 18배 차이가 난다. 그리고 ALBERT-xxlarge의 경우 12-Layer와 24-Layer의 성능이 크게 차이나지 않고, 오히려 Layer가 늘어남에 따른 계산비용이 늘어나는 단점으로 인해 12-Layer의 결과를 채택했다.
 <br><br>
+- Experimental Results
+  - Experimental Setup
+  <br><br>
+  - Evaluation Benchmarks
+  <br><br>
+  - Overall Comparison between BERT and ALBERT
+  <br><br>
+  - Factorized Embedding Parameterization
+  <br><br>
+  - Cross-layer parameter sharing
+  <br><br>
+  - Sentence order prediction (SOP)
+  <br><br>
+  - What if we train for the same amount of time?
+  <br><br>
+  - Additional training data and dropout effects
+  <br><br>
+  - Current State-of-the-aft on NLU Tasks
