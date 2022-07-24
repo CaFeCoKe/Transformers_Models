@@ -47,8 +47,18 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
 <br><br>
 - Experimental Results
   - Experimental Setup
-  <br><br>
+    - Pre-train corpora : BookCorpus, Wikipedia (약 16GB)
+    - BERT와 동일한 input format : [CLS] x [SEP] y [SEP] 
+    - Maximum input length : 512 (10% 확률로 512보다 짧은 input sequence를 random하게 생성)
+    - Vocab size : 30,000 (SentencePiece 사용) 
+    - N-gram masking을 사용하며 길이를 random 선택 (최대 길이 3)
+    - batch size : 4096 
+    - step : 125000 (optimizer: Lamb / learning rate: 0.00176)
+    - Cloud TPU v3에서 진행하였으며 사용된 TPU의 수는 model size에 따라 64~512
+    <br><br>
   - Evaluation Benchmarks
+    - Intrinsic Evaluation (내재적 평가) : 훈련 진행 상황을 모니터링하기 위해 SQuAD와 RACE의 development sets를 기반으로 development sets를 만들어 MLM과 SOP 성능을 확인한다. 단, 다운스트림 평가에 영향은 주지 않는다.<br><br>
+    - Downstream Evaluation (다운스트림 평가) : General Language Understanding Evaluation(GLUE), Stanford Question Answering Dataset(SQuAD), ReAding Comprehension from Examinations(RACE)를 사용하여 모델을 평가한다. 단, GLUE의 경우 개발세트의 변동이 크기 때문에 5 run 이상의 중앙값을 쓴다. 
   <br><br>
   - Overall Comparison between BERT and ALBERT
   <br><br>
