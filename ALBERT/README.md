@@ -61,10 +61,22 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
     - Downstream Evaluation (다운스트림 평가) : General Language Understanding Evaluation(GLUE), Stanford Question Answering Dataset(SQuAD), ReAding Comprehension from Examinations(RACE)를 사용하여 모델을 평가한다. 단, GLUE의 경우 개발세트의 변동이 크기 때문에 5 run 이상의 중앙값을 쓴다. 
   <br><br>
   - Overall Comparison between BERT and ALBERT
+    - BERT와 ALBERT의 성능 비교표<br>
+    ![compare_model](https://user-images.githubusercontent.com/86700191/180699819-727991ab-45c5-48ec-a89d-6445332cc084.PNG) <br>
+    ALBERT-xxLarge는 BERT-Large의 약 70%의 파라미터 수로 몇 가지 대표적인 다운스트림 작업에 대해 BERT-Large 보다 더 좋은 성능을 보여준다.<br>
+  또 다른 흥미로운 점은 동일한 training configuration(동일한 수의 TPU)에서 training time의 데이터 처리 속도이다. 통신과 계산이 적기 때문에 ALBERT는 BERT에 비해 데이터 처리량이 더 높다. 같은 Large 모델로 비교했을 때 1.7배 빠른 반면, ALBERT-xxlarge는 더 큰 구조로 인해 3배가량 느리다는 것을 앟 수 있다.
   <br><br>
   - Factorized Embedding Parameterization
+    - embedding size 변화에 따른 성능 비교표<br>
+    ![embedding_size](https://user-images.githubusercontent.com/86700191/180701493-47b4b6e0-1e94-430c-9d0a-480919f27827.PNG) <br>
+    non-shared condition(BERT-style)에서는 embedding size가 클수록 성능이 향상되지만 그다지 크진 않다. all-shared condition(ALBERT-style)에서는 128의 크기가 가장 좋다. 따라서, E = 128로 고정한다.
   <br><br>
   - Cross-layer parameter sharing
+    - cross-layer parameter-sharing의 전략 비교<br>
+    ![compare_cross_layer](https://user-images.githubusercontent.com/86700191/180703898-9d887fb4-a21e-42e0-bc68-d100521254ab.PNG) <br>
+    두가지 embedding size(768, 128)에 대해서 all-shared stategy(ALBERT-style), non-shared strategy(BERT-style) 및 only the attention parameter share, FFN parameter share 4가지 전략에 대해 비교한다. <br>
+    all-shared strategy는 두 조건 모두에서 성능을 저하시킨다. 그러나 E=768(Avg에서 -2.5)에 비해 E=128(Avg에서 -1.5)에 대해서는 덜 감소한다. 또한 대부분의 성능 저하는 FFN layer parameter sharing에서 비롯된 것으로 나타났지만 attention parameter를 sharing하면 E=128(Avg에서 +0.1)일 때 하락이 발생하지 않으며 E=768(Avg에서 -0.7)에서 약간의 하락이 발생한다.<br>
+    또 다른 전략으로는 L 레이어를 크기 M의 N개의 그룹으로 나누고 각 크기 M 그룹이 파라미터를 공유하는 전략이 있다. 이때, M이 작을수록 성능이 좋아지지만 전체 파라미터의 수가 증가하게 된다. 따라서, all-shared strategy를 채택한다.
   <br><br>
   - Sentence order prediction (SOP)
   <br><br>
