@@ -79,9 +79,21 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
     또 다른 전략으로는 L 레이어를 크기 M의 N개의 그룹으로 나누고 각 크기 M 그룹이 파라미터를 공유하는 전략이 있다. 이때, M이 작을수록 성능이 좋아지지만 전체 파라미터의 수가 증가하게 된다. 따라서, all-shared strategy를 채택한다.
   <br><br>
   - Sentence order prediction (SOP)
+    - NSP와 SOP가 intrinsic and downstream tasks에 미치는 영향<br>
+    ![sop](https://user-images.githubusercontent.com/86700191/180920576-856687f9-e38a-4805-a9b3-bebf72f1971d.PNG) <br>
+    ALBERT 기반 구성으로 None(XLNet and RoBERTa), NSP(BERT), SOP(ALBERT)의 세가지 실험을 head-to-head로 비교한다. intrinsic tasks의 결과는 NSP loss가 SOP task에 비해 이점이 없음을 보여준다.(none과 비슷한 52.0%의 정확도) 이를 통해 NSP는 topic shift만 모델링 한다는 결론을 낼 수 있다.<br>
+    대조적으로 SOP loss는 NSP task를 잘 해결하고(78.9% 정확도), SOP task도 잘 수행한다.(86.5% 정확도) 더 중요한 점은 SOP loss가 multi-sentence encoding task에 대한 작업성능을 지속적으로 향상시킨다는 점이다.(+1% for SQuAD1.1, +2% for SQuAD2.0, +1.7% for RACE)
   <br><br>
   - What if we train for the same amount of time?
+    - 학습 시간 제어의 효과<br>
+    ![same_time](https://user-images.githubusercontent.com/86700191/180920580-94387d78-294a-473a-a9b7-0c79ecaa4935.PNG) <br>
+    training time이 길수록 성능이 향상되므로 training step을 제어하는 대신 실제 training time을 제어하는 비교를 수행한다. BERT-large(400k step, 34h)과 ALBERT-xxlarge(125k step, 32h)의 training time은 거의 같았고 이를 학습 후 성능을 확인하면 ALBERT-xxlarge가 BERT-large에 비해 average 1.5% 향상, RACE에서는 5.2% 향상되었다.
   <br><br>
   - Additional training data and dropout effects
+    - 데이터 추가 및 dropout 제거 효과<br>
+    ![add_data](https://user-images.githubusercontent.com/86700191/180929920-875c95c2-ea8a-442e-b054-cd3bd8ca64d7.PNG)
+    ![dropout](https://user-images.githubusercontent.com/86700191/180929931-0c68794c-5011-4d19-b25b-674e00ec908f.PNG)
+    ![add_data_dropout](https://user-images.githubusercontent.com/86700191/180929929-0013edf4-31c5-4eea-8de8-c16b0c07c9ca.PNG) <br>
+    
   <br><br>
   - Current State-of-the-aft on NLU Tasks
