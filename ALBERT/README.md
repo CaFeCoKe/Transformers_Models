@@ -91,9 +91,16 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
   <br><br>
   - Additional training data and dropout effects
     - 데이터 추가 및 dropout 제거 효과<br>
-    ![add_data](https://user-images.githubusercontent.com/86700191/180929920-875c95c2-ea8a-442e-b054-cd3bd8ca64d7.PNG)
-    ![dropout](https://user-images.githubusercontent.com/86700191/180929931-0c68794c-5011-4d19-b25b-674e00ec908f.PNG)
+    ![add_data](https://user-images.githubusercontent.com/86700191/180929920-875c95c2-ea8a-442e-b054-cd3bd8ca64d7.PNG) <br>
+    ![dropout](https://user-images.githubusercontent.com/86700191/180929931-0c68794c-5011-4d19-b25b-674e00ec908f.PNG) <br>
     ![add_data_dropout](https://user-images.githubusercontent.com/86700191/180929929-0013edf4-31c5-4eea-8de8-c16b0c07c9ca.PNG) <br>
-    
+    additional data가 있거나 없는 두 가지 조건에서 MLM accuracy를 측정시 additional data가 있는 조건에서 성능이 향상되었다. SQuAD를 제외한 나머지 task에서 성능이 향상 되었다는 것도 알 수 있는데 여기서 SQuAD 벤치마크의 성능이 낮아진 이유는 Wikipedia 기반으로 domain외의 학습자료롭부터 부정적인 영향을 받기 떄문이다. <br>
+    또한, 1M step을 학습 후에도 가장 큰 모델(ALBERT-xxlarge)은 훈련 데이터에 대해 overfit 하지 않는다는 점에 주목하여 model capacity를 늘리기 위해 dropout을 제거하였고 그 결과 MLM accuracy가 크게 향상되는 것을 볼 수있다.
+    이전의 연구들에서 CNN(Convolutional Neural Network)의 batch normalization과 dropout의 조합이 model의 성능을 저하시킨다는 이론적인 증거와 경험적인 결과가 있었다. 따라서, large transformer based model에서 dropout이 성능을 저하시킬 수 있음을 가장 먼저 보여주었다고 볼 수 있지만 ALBERT는 Transformer의 특별한 경우이기 때문에 타 Transformer기반 모델에서도 해당되는 지는 추가 실험이 필요하다.
   <br><br>
   - Current State-of-the-aft on NLU Tasks
+    - GLUE, SQuAD, RACE 벤치마크의 SOTA 결과<br>
+    ![GLUE](https://user-images.githubusercontent.com/86700191/181205586-8f20234a-9da6-4b65-81bd-c59d8745e1da.PNG) <br>
+    ![SQuAD](https://user-images.githubusercontent.com/86700191/181205593-a97efd64-86e4-4d60-9b8c-9e057355a327.PNG) <br>
+    single-model ALBERT의 구성은 MLM 및 SOP loss를 결합하고 dropout을 사용하지 않는 ALBERT-xxlarge의 구성과 같다. 최종 ensemble model에 기여하는 checkpoint는 development set의 성능을 기반으로 선택되며, task에 따라 6~17개를 가지게 된다. GLUE와 RACE의 경우 12-Layer, 24-Layer를 사용하여 다양한 훈련 단계에서 fine-tuning이 되고 앙상블 모델에 대한 모델 예측을 평균화한다. SQuAD의 경우 다중 확률을 갖는 범위에 대한 예측 점수, “unanswerable” 결정 예측 점수를 평균화한다. <br>
+    single-model 및 ensemble-model의 결과는 ALBERT가 모두 SOTA를 달성하였으며 GLUE score 89.4, SQuAD 2.0 F1 92.2 및 RACE test accuracy 89.4를 달성함을 확인할 수 있다. 특히, RACE의 경우 BERT에 비해 +17.4%, XLNet에 비해 +7.6%, RoBERTa에 비해 +6.2%, DCMI에 비해 +5.3% 향상시켰다는 것을 알 수있다.
