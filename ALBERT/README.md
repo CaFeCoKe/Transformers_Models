@@ -104,3 +104,6 @@ ALBERT는 이 두 문제점에 대해 접근하여 해결방법을 제시하기 
     ![SQuAD](https://user-images.githubusercontent.com/86700191/181205593-a97efd64-86e4-4d60-9b8c-9e057355a327.PNG) <br>
     single-model ALBERT의 구성은 MLM 및 SOP loss를 결합하고 dropout을 사용하지 않는 ALBERT-xxlarge의 구성과 같다. 최종 ensemble model에 기여하는 checkpoint는 development set의 성능을 기반으로 선택되며, task에 따라 6~17개를 가지게 된다. GLUE와 RACE의 경우 12-Layer, 24-Layer를 사용하여 다양한 훈련 단계에서 fine-tuning이 되고 앙상블 모델에 대한 모델 예측을 평균화한다. SQuAD의 경우 다중 확률을 갖는 범위에 대한 예측 점수, “unanswerable” 결정 예측 점수를 평균화한다. <br>
     single-model 및 ensemble-model의 결과는 ALBERT가 모두 SOTA를 달성하였으며 GLUE score 89.4, SQuAD 2.0 F1 92.2 및 RACE test accuracy 89.4를 달성함을 확인할 수 있다. 특히, RACE의 경우 BERT에 비해 +17.4%, XLNet에 비해 +7.6%, RoBERTa에 비해 +6.2%, DCMI에 비해 +5.3% 향상시켰다는 것을 알 수있다.
+<br><br>
+- 예시 코드에 쓰인 모델 구조<br><br>
+![ALBERT](https://user-images.githubusercontent.com/86700191/182588595-51ca9e59-62ed-4026-be98-4919fb308e51.png)
