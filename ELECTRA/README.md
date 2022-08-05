@@ -11,6 +11,23 @@
     ELECTRA-Small의 경우 single gpu에서 4일만에 학습된다. (BERT-Large의 1/20 파라미터 수, 1/135 계산량을 가지고 있다) 또한 BERT-Small과 비교하여 GLUE 성능이 5point 더 높고, 훨씬 더 큰 모델인 GPT 보다도 더 높다. ELECTRA-Large는 RoBERTa나 XLNet보다 더 적은 파라미터와 계산량의 1/4만 사용하였으나 비슷한 성능을 가졌다.
 <br><br>
 - Method
+  - replaced token detection의 개요 <br>
+  ![replaced_token_detection](https://user-images.githubusercontent.com/86700191/183081658-c8518414-55c2-43cd-a1b7-bb809d2cfd9b.PNG) <br>
+  RTD(replaced token detection) 태스크를 통해 학습하기 위해서 generator G 와 discriminator D , 두 개의 네트워크로 구성되어 있으며 공통적으로 Transformer 인코더 구조를 따른다. <br>
+  position t에 대해 generator는 softmax layer로 token x_t를 generation할 확률을 출력한다. <br>
+  ![generator](https://user-images.githubusercontent.com/86700191/183089546-81cf4960-c51d-4c7c-b572-c904eecaeefc.PNG) <br><br>
+  e는 token embedding. 주어진 position t에 대해 discriminator는 token x_t가 “fake”인지, 즉 data distribution이 아닌 generator에서 나온것인지 sigmoid output layer로 예측한다. <br>
+  ![discriminator](https://user-images.githubusercontent.com/86700191/183089954-62e2f25a-cf96-4ddf-99ad-fc7e75d836fd.PNG) <br><br>
+  generator는 Masked Language Modeling(MLM)을 수행하도록 훈련한다. 입력 x = [x1, x2, ..., xn]이 주어지면 MLM은 먼저 m = [m1, ..., mk]를 마스크할 set of positions(1과 n 사이의 위치)를 무작위로 선택하여 [MASK] 토큰으로 대체한다. 그런 다음 generator는 mask된 토큰의 original ID를 예측하는 방법을 학습한다. discriminator는 데이터의 토큰을 generator 샘플로 대체된 토큰과 구별하도록 학습한다.<br>
+    - 모델의 입력 구조 <br>
+    ![input](https://user-images.githubusercontent.com/86700191/183092177-11719d91-24bd-4d38-89b3-3a3b32af0595.PNG) <br><br>
+    - 모델의 Loss function <br>
+    ![Loss](https://user-images.githubusercontent.com/86700191/183092185-47a40440-cab1-4e69-84ec-31f76c1311c9.PNG) 
+  <br><br>
+  - GAN(Generative Adversarial Networks)과의 차이점
+    - generator가 원래 토큰과 동일한 토큰을 생성했을 때, "fake" 대신 "real"로 간주한다.
+    - generator가 discriminator를 속이기 위해 adversarial(적대적)하게 학습하는 게 아니고 maximum likelihood(최대가능도)로 학습한다. (샘플링하는 과정에서 역전파가 불가능)
+    - generator의 입력으로 노이즈 벡터를 넣어주지 않는다. 
 <br><br>
 - Experiments
 <br><br>
