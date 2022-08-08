@@ -47,7 +47,16 @@
       모두 동일한 스텝(500K)만큼을 학습했기 때문에 작은 모델은 똑같은 계산량, 시간만큼 학습하면 더 많은 step을 돌 것이고, 결과적으로 작은 모델 입장에서는 계산량 대비 성능을 손해를 보게 된다. 그럼에도 불구하고 discriminator의 크기 대비 1/4 - 1/2 크기의 generator를 사용했을 때 가장 좋은 성능을 가진다는 것을 실험을 통해 알수 있었다.<br>
       이러한 이유로 generator가 너무 강력하면 discriminator의 태스크가 너무 어려워져 효과적인 학습을 방해한다 추측할 수 있다. 특히, discriminator의 파라미터를 실제 데이터 분포가 아닌 generator를 모델링하는 데 사용할 수도 있다.
     <br><br>
-    - Training Algorithms
+    - Training Algorithms : generator와 discriminator를 jointly(공동으로) 학습시키는 방식으로 채택헸다.
+      - Two-stage training : generator만 학습시킨 다음 discriminator를 generator의 학습된 가중치로 초기화, generator의 가중치는 고정하고 학습시키는 방식이다. 단, generator, discriminator의 크기가 같아야 하며, 이를 통해 점점 discriminator를 위한 학습과정이 훈련 내내 나아지게 된다.
+      <br><br>
+      - Adversarial training : GAN처럼 generator를 reinforcement learning(강화학습)을 통해 adversarial training하는 방식이다.
+      <br><br>
+      - Training Algorithm 비교<br>
+      ![compare_twostage_adversarial](https://user-images.githubusercontent.com/86700191/183397388-3f2e02ae-f4f7-4eb1-83a3-5b4e1644b882.PNG) <br>
+      generator와 discriminator를 jointly 학습시키는 방식이 가장 좋다는 것을 알 수 있다. Two-stage 학습에서 discriminative objective로 바꿨을 때, 성능이 쭉 오른 것을 볼 수있으며, Adversarial 학습이 maximum likelihood 기반의 학습보다 성능이 낮다는 것을 볼 수 있다.<br>
+      이러한 이유로 Adversarial training에 대한 MLM 성능이 안 좋다는 점이다. MLM 정확도가 58% 밖에 안되는데 이것은 텍스트를 생성하는 큰 작업 공간에서 작업할 때 강화 학습의 샘플 효율성이 떨어졌기 때문이다.
+      또 다른 이유로는 학습된 generator가 만드는 분포의 엔트로피가 낮다는 점이다. Softmax 분포는 하나의 토큰에 확률이 쏠려있는데 이렇게 되면 샘플링할 때 다양성이 많이 떨어지게 된다.
   <br><br>
   - Small Models
   <br><br>
