@@ -11,3 +11,6 @@ Transformers의 다양한 언어 모델을 공부하기 위한 repository이며,
 
 - Sequence-to-Sequence 기반
   - [BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension](https://arxiv.org/pdf/1910.13461.pdf)
+
+- auto-regressive, auto-encoder 기반
+  - [XLNet: Generalized Autoregressive Pretraining for Language Understanding](https://arxiv.org/pdf/1906.08237.pdf)
