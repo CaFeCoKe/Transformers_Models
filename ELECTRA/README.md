@@ -30,6 +30,30 @@
     - generator의 입력으로 노이즈 벡터를 넣어주지 않는다. 
 <br><br>
 - Experiments
+  - Experimental Setup
+    - General Langauage Understanding Evaluation (GLUE) 벤치마크와 Stanford Question Answering (SQuAD) 데이터셋을 사용
+    - BERT와 동일하게 Wikipedia와 BooksCorpus를 사용해서 pre-training (Large 모델의 경우에는 XLNet에서 사용한 ClueWeb, CommonCrawl, Gigaword를 사용)
+    - 모델의 구조와 대부분의 하이퍼 파라미터를 BERT와 동일하게 설정
+    - 10번의 fine-tuning 결과의 중간값(median)을 최종 성능으로 사용
+  <br><br>
+  - Model Extensions
+    - Weight sharing(가중치 공유) : pre-training의 효율성을 증가시키기 위해 generator, discriminator 사이의 가중치를 공유한다. generator, discriminator의 크기가 같으면 Transformer의 가중치가 동일할 수 있다.<br>
+    generator, discriminator의 크기가 같을 때 weight tying strategies의 GLUE 점수를 비교하면 no weight tying < tying token embeddings < tying all weights이 된다. 하지만 tying all weights는 generator, discriminator의 크기가 같아야 한다는 점이 상당한 단점이 생긴다. <br>
+    Discriminator는 입력으로 들어온 토큰만 학습하는 반면, generator는 출력 레이어에서 softmax를 통해 사전에 있는 모든 토큰에 대해서 밀도 있게 학습하여 MLM이 이러한 표현을 잘 학습하기 떄문에 ELECTRA는 tied token embeddings에서 이득을 얻는다는 가설을 세우고 이후 실험에 대해 진행한다.
+    <br><br>
+    - Smaller Generators : generator, discriminator의 크기가 동일할 경우 ELECTRA는 MLM보다 훈련할 때 단계당 약 두 배의 compute가 필요해진다. 이것을 줄이기 위해 더 적은 generator를 사용한다. 특히, 하이퍼파라미터를 유지하면서 Layer 크기를 줄여 모델의 크기를 작게 만든다. 
+      - generator 와 discriminator 크기에 대한 GLUE 점수<br>
+      ![Glue_G_D](https://user-images.githubusercontent.com/86700191/183343142-a7763c05-a0e5-4c73-a845-2ba92232d664.PNG) <br>
+      모두 동일한 스텝(500K)만큼을 학습했기 때문에 작은 모델은 똑같은 계산량, 시간만큼 학습하면 더 많은 step을 돌 것이고, 결과적으로 작은 모델 입장에서는 계산량 대비 성능을 손해를 보게 된다. 그럼에도 불구하고 discriminator의 크기 대비 1/4 - 1/2 크기의 generator를 사용했을 때 가장 좋은 성능을 가진다는 것을 실험을 통해 알수 있었다.<br>
+      이러한 이유로 generator가 너무 강력하면 discriminator의 태스크가 너무 어려워져 효과적인 학습을 방해한다 추측할 수 있다. 특히, discriminator의 파라미터를 실제 데이터 분포가 아닌 generator를 모델링하는 데 사용할 수도 있다.
+    <br><br>
+    - Training Algorithms
+  <br><br>
+  - Small Models
+  <br><br>
+  - Large Models
+  <br><br>
+  - Efficiency Analysis
 <br><br>
 - Conclusion
 <br><br>
