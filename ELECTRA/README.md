@@ -58,7 +58,11 @@
       이러한 이유로 Adversarial training에 대한 MLM 성능이 안 좋다는 점이다. MLM 정확도가 58% 밖에 안되는데 이것은 텍스트를 생성하는 큰 작업 공간에서 작업할 때 강화 학습의 샘플 효율성이 떨어졌기 때문이다.
       또 다른 이유로는 학습된 generator가 만드는 분포의 엔트로피가 낮다는 점이다. Softmax 분포는 하나의 토큰에 확률이 쏠려있는데 이렇게 되면 샘플링할 때 다양성이 많이 떨어지게 된다.
   <br><br>
-  - Small Models
+  - Small Models : 연구의 목표는 pre-training의 효율성을 향상시키는 것이므로 단일 GPU에서 빠르게 훈련할 수 있는 작은 모델을 개발한다. BERT-Base의 하이퍼파라미터 기준으로 sequence length는 512->128, batch size는 256 -> 128, hidden size는 768 -> 256, token embedding은 768 -> 128으로 줄였다. <br>
+  또한 공정한 비교를 위해 동일한 하이퍼파라미터를 사용하여 BERT-Small 모델도 교육한다. BERT-Small을 1.5M step으로 훈련하기 때문에 1M step으로 훈련한 ELECTRA-Small과 동일한 훈련 FLOP를 사용한다.
+    - small model 간의 GLUE score 비교<br>
+    ![model_GLUE](https://user-images.githubusercontent.com/86700191/183630464-b2180a44-5d17-48d5-b90b-e436f54e79eb.PNG) <br>
+    ELECTRA-Small은 BERT-Small보다 무려 5 포인트나 높은 성능을 보였고, 심지어는 훨씬 큰 모델인 GPT보다도 좋은 성능을 보였다. 또한, 수렴 속도가 매우 빠른것을 볼 수 있는데 하나의 GPU로 6시간 만에 꽤 괜찮은 성능을 보여준다. Base 크기의 경우에도 ELECTRA-Base는 BERT-Base를 능가할 뿐 아니라 심지어 BERT-Large보다도 더 좋은 성능을 기록했다.
   <br><br>
   - Large Models
   <br><br>
