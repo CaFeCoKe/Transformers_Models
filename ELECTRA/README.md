@@ -60,13 +60,25 @@
   <br><br>
   - Small Models : 연구의 목표는 pre-training의 효율성을 향상시키는 것이므로 단일 GPU에서 빠르게 훈련할 수 있는 작은 모델을 개발한다. BERT-Base의 하이퍼파라미터 기준으로 sequence length는 512->128, batch size는 256 -> 128, hidden size는 768 -> 256, token embedding은 768 -> 128으로 줄였다. <br>
   또한 공정한 비교를 위해 동일한 하이퍼파라미터를 사용하여 BERT-Small 모델도 교육한다. BERT-Small을 1.5M step으로 훈련하기 때문에 1M step으로 훈련한 ELECTRA-Small과 동일한 훈련 FLOP를 사용한다.
-    - small model 간의 GLUE score 비교<br>
+    - GLUE dev set에 대한 small model 간 비교<br>
     ![model_GLUE](https://user-images.githubusercontent.com/86700191/183630464-b2180a44-5d17-48d5-b90b-e436f54e79eb.PNG) <br>
     ELECTRA-Small은 BERT-Small보다 무려 5 포인트나 높은 성능을 보였고, 심지어는 훨씬 큰 모델인 GPT보다도 좋은 성능을 보였다. 또한, 수렴 속도가 매우 빠른것을 볼 수 있는데 하나의 GPU로 6시간 만에 꽤 괜찮은 성능을 보여준다. Base 크기의 경우에도 ELECTRA-Base는 BERT-Base를 능가할 뿐 아니라 심지어 BERT-Large보다도 더 좋은 성능을 기록했다.
   <br><br>
-  - Large Models
+  - Large Models : replaced token detection task의 효과를 측정하기 위해 큰 ELECTRA 모델을 훈련시킨다. ELECTRA-Large는 BERT-Large와 크기가 같지만 훨씬 더 오래 훈련된다. 특히, 400k step(ELECTRA-400K, RoBERTa의 약 1/4 pre-training compute)와 1.75M step(ELECTRA-1.75M, RoBERTa와 유사한 compute)에 대한 모델을 훈련한다. 
+  2048의 batch size과 XLNet pre-training 데이터를 사용했으며, XLNet 데이터가 RoBERTa를 교육하는 데 사용된 데이터와 유사하지만, 비교가 완전히 직접적인 것은 아니라는 점에 주목한다. 비교에 사용할 BERT-Large 모델은 ELECTRA-400K과 동일한 하이퍼파라미터와 훈련시간을 사용했다. 
+    - GLUE dev set에 대한 large model 간 비교<br>
+    ![GLUE_dev_large](https://user-images.githubusercontent.com/86700191/183820655-38dc1b2d-2d29-467f-9e1b-1a62fb5fa0b9.PNG) <br>
+    ELECTRA-400k는 RoBERTa 및 XLNet과 동등하게 작동하나 RoBERTa와 XLNet을 교육하는 데 비해 ELECTRA-400K를 교육하는데 드는 compute는 1/4(FLOPs) 미만이므로 ELECTRA의 샘플 효율성 향상이 대규모로 유지된다는 것을 입증할 수 있다. 더 오래 훈련한 ELECTRA-1.75M의 경우 대부분의 GLUE task에서 가장 높은 점수를 얻었고, pre-training compute를 적게 요구하는 모델이 되었다.
+    <br><br>
+    - SQuAD에 대한 non-ensemble 모델 간 비교<br>
+    ![squad_large](https://user-images.githubusercontent.com/86700191/183827391-b04b38fa-2946-4cb1-a298-59e5585d6530.PNG) <br>
+    GLUE 결과와 일관되게, 동일한 계산 리소스가 주어진 경우 ELECTRA는 MLM 기반 방법보다 더 나은 점수를 받는다. ELECTRA-400k를 기준으로 비슷한 compute를 가지는 RoBERTa-100k와 BERT보다 성능이 좋으며, 약 4배의 compute를 가지는 RoBERTa-500k와 비슷한 성능을 가진다. <br>
+    ELECTRA는 일반적으로 SQuAD 1.1보다 2.0에서 더 좋은 성능을 가지는데 이는 replaced token detection이 SQuAD의 answerability classification으로 이전될 수 있기 때문이다.
   <br><br>
-  - Efficiency Analysis
+    - Efficiency Analysis : small subset of tokens에 대한 훈련 목표를 제시하는 것이 MLM을 비효율적으로 만든다고 제안했다. 하지만 적은 수의 masked token만 예측하지만 여전히 많은 수의 input token을 받기 떄문에 명백하지 않다고 판단하여 BERT와 ELECTRA 사이의 “stepping stones(디딤돌)”이 되도록 설계된 일련의 다른 pre-training 목표를 비교한다.
+      - ELECTRA 15%
+      - Replace MLM
+      - All-Tokens MLM
 <br><br>
 - Conclusion
 <br><br>
