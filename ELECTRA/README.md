@@ -76,9 +76,18 @@
     ELECTRA는 일반적으로 SQuAD 1.1보다 2.0에서 더 좋은 성능을 가지는데 이는 replaced token detection이 SQuAD의 answerability classification으로 이전될 수 있기 때문이다.
   <br><br>
     - Efficiency Analysis : small subset of tokens에 대한 훈련 목표를 제시하는 것이 MLM을 비효율적으로 만든다고 제안했다. 하지만 적은 수의 masked token만 예측하지만 여전히 많은 수의 input token을 받기 떄문에 명백하지 않다고 판단하여 BERT와 ELECTRA 사이의 “stepping stones(디딤돌)”이 되도록 설계된 일련의 다른 pre-training 목표를 비교한다.
-      - ELECTRA 15%
-      - Replace MLM
-      - All-Tokens MLM
-<br><br>
+      - ELECTRA 15% : ELECTRA의 구조를 유지하되, discriminator loss를 입력 토큰의 15%만으로 만들도록 설정한다.
+      - Replace MLM : Discriminator를 MLM 학습을 하되 [MASK]로 치환하는 게 아니고 generator가 만든 토큰으로 치환힌디.
+      - All-Tokens MLM : Replace MLM처럼 하되, 일부(15%) 토큰만 치환하는 게 아니고 모든 토큰을 generator가 생성한 토큰으로 치환한다.
+      <br><br>
+      - Compute-efficiency 성능 비교<br>
+      ![compare_effcoency](https://user-images.githubusercontent.com/86700191/184106469-fedf90b2-73f8-4789-9707-a4caef191933.PNG) <br>
+      ELECTRA-15%가 ELECTRA보다 성능이 낮은 것을 보며 ELECTRA가 부분 집합이 아닌 모든 입력 토큰에 대해 정의된 loss를 통해 큰 이익을 얻고 있다는 것을 발견했다. 또한, Replace MLM이 BERT보다 성능이 좋은 것을 보고, [MASK] 토큰의 pre-training과 fine-tuning 간의 불일치 문제로 인해 BERT의 성능이 약간 손상되고 있음을 발견했다.
+      하지만 BERT는 이를 위한 트릭이 포함되어 있다는 점을 주목하여 이 휴리스틱한 방법이 문제를 완전히 해결하지 못한다는 것을 알 수 있다. 마지막으로 All-Tokens MLM이 BERT와 ELCTRA 사이의 격차를 좁힌다는 것을 발견했다. 전체적으로 ELECTRA의 향상의 많은 양은 모든 토큰에서 학습한 결과이며, 적은 양은 pre-training과 fine-tuning 간의 불일치를 해결한 점에서 온다고 시사할 수 있따.
+      <br><br>
+      - 다양한 모델 크기에 대한 BERT와 ELCTRA의 비교 <br>
+      ![compare_BERT_ELECTRA](https://user-images.githubusercontent.com/86700191/184106474-0372f18d-d7a6-4bba-af60-8e21a7f0716f.PNG) <br>
+      ELECTRA의 이득이 모델이 작아질수록 더 커진다는 것을 발견했다. 또한 소형 모델은 완전히 훈련되면 수렴하게되며, ELECTRA가 BERT보다 높은 다운스트림 정확도를 보여준다. All-Tokens MLM에 비해 ELECTRA의 향상은 단지 ELECTRA의 이득이 더 빠른 훈련에서 나온다는 것에서 비롯된다고 시사할 수 있다.
+  <br><br>
 - Conclusion
 <br><br>
