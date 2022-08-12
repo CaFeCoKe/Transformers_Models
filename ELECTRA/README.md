@@ -83,11 +83,11 @@
       - Compute-efficiency 성능 비교<br>
       ![compare_effcoency](https://user-images.githubusercontent.com/86700191/184106469-fedf90b2-73f8-4789-9707-a4caef191933.PNG) <br>
       ELECTRA-15%가 ELECTRA보다 성능이 낮은 것을 보며 ELECTRA가 부분 집합이 아닌 모든 입력 토큰에 대해 정의된 loss를 통해 큰 이익을 얻고 있다는 것을 발견했다. 또한, Replace MLM이 BERT보다 성능이 좋은 것을 보고, [MASK] 토큰의 pre-training과 fine-tuning 간의 불일치 문제로 인해 BERT의 성능이 약간 손상되고 있음을 발견했다.
-      하지만 BERT는 이를 위한 트릭이 포함되어 있다는 점을 주목하여 이 휴리스틱한 방법이 문제를 완전히 해결하지 못한다는 것을 알 수 있다. 마지막으로 All-Tokens MLM이 BERT와 ELCTRA 사이의 격차를 좁힌다는 것을 발견했다. 전체적으로 ELECTRA의 향상의 많은 양은 모든 토큰에서 학습한 결과이며, 적은 양은 pre-training과 fine-tuning 간의 불일치를 해결한 점에서 온다고 시사할 수 있따.
+      하지만 BERT는 이를 위한 트릭이 포함되어 있다는 점을 주목하여 이 휴리스틱한 방법이 문제를 완전히 해결하지 못한다는 것을 알 수 있다. 마지막으로 All-Tokens MLM이 BERT와 ELCTRA 사이의 격차를 좁힌다는 것을 발견했다. 전체적으로 ELECTRA의 향상의 많은 양은 모든 토큰에서 학습한 결과이며, 적은 양은 pre-training과 fine-tuning 간의 불일치를 해결한 점에서 온다고 시사할 수 있다.
       <br><br>
       - 다양한 모델 크기에 대한 BERT와 ELCTRA의 비교 <br>
       ![compare_BERT_ELECTRA](https://user-images.githubusercontent.com/86700191/184106474-0372f18d-d7a6-4bba-af60-8e21a7f0716f.PNG) <br>
       ELECTRA의 이득이 모델이 작아질수록 더 커진다는 것을 발견했다. 또한 소형 모델은 완전히 훈련되면 수렴하게되며, ELECTRA가 BERT보다 높은 다운스트림 정확도를 보여준다. All-Tokens MLM에 비해 ELECTRA의 향상은 단지 ELECTRA의 이득이 더 빠른 훈련에서 나온다는 것에서 비롯된다고 시사할 수 있다.
   <br><br>
-- Conclusion
+- Conclusion : language representation learning을 위한 새로운 self-supervision 태스크인 Replaced Token Detection을 제안했다. 이 제안의 주요 아이디어는 작은 generator가 만들어 낸 질 좋은 negative sample과 input token을 구별하도록 텍스트 인코더를 학습시키는 것이다. Masked language modeling에 비해 pre-training objective는 훨씬 효율적(compute-efficient)이고 downstream tasks에서 더 좋은 성능을 나타내었다. 또한, 상대적으로 적은 compute를 사용하는 경우에도 잘 작동한다는 것을 알 수 있었다.
 <br><br>
