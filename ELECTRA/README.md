@@ -91,3 +91,5 @@
   <br><br>
 - Conclusion : language representation learning을 위한 새로운 self-supervision 태스크인 Replaced Token Detection을 제안했다. 이 제안의 주요 아이디어는 작은 generator가 만들어 낸 질 좋은 negative sample과 input token을 구별하도록 텍스트 인코더를 학습시키는 것이다. Masked language modeling에 비해 pre-training objective는 훨씬 효율적(compute-efficient)이고 downstream tasks에서 더 좋은 성능을 나타내었다. 또한, 상대적으로 적은 compute를 사용하는 경우에도 잘 작동한다는 것을 알 수 있었다.
 <br><br>
+- 예시 코드에 쓰인 모델 구조<br><br>
+![ELECTRA](https://user-images.githubusercontent.com/86700191/185046068-842401b1-e101-48cc-89c9-c46441758089.png)
