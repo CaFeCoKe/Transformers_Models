@@ -8,8 +8,10 @@ BART는 몇 개의 추가 transformer layers 위에 쌓이는 machine translatio
   - BART, BERT, GPT의 도식적(schematic) 비교<br><br>
  ![schematic_comp](https://user-images.githubusercontent.com/86700191/185347742-2d717009-4f34-4752-85f3-0e902db491c7.png)
 <br><br>
-- Model
-  - Architecture
+- Model : BART는 손상된 문서를 원본 문서에 매핑하는 denoising autoencoder이다. 손상된 텍스트에 대한 bidirectional encoder와 left-to-right autoregressive decoder를 가진 sequence-to-sequence 모델로 구현된다. pre-training을 위해 원본 문서의 negative log likelihood를 최적화한다.
+  - Architecture : ReLU 활성화 함수를 GeLU로 수정하고, 파라미터를 초기화하는 sequence-to-sequence Transformer 구조를 사용한다. Base 모델의 경우 인코더와 디코더에 6개의 레이어를 사용하고, Large 모델의 경우 각각 12개의 레이어를 사용한다.<br>
+  BERT와의 차이점으로는 디코더의 각 레이어가 인코더의 마지막 히든 레이어에 추가적으로 cross-attention을 수행한다는 점과 word prediction 전에 추가적인 feed-forward network을 사용하지 않는다는 점이다. 또한, 모델이 동일한 크기라면 BART는 BERT보다 10% 정도 많은 parameters를 가진다.
+  <br><br>
   - Pre-training BART
 <br><br>
 - Fine-tuning BART
