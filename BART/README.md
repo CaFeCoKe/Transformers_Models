@@ -12,7 +12,14 @@ BART는 몇 개의 추가 transformer layers 위에 쌓이는 machine translatio
   - Architecture : ReLU 활성화 함수를 GeLU로 수정하고, 파라미터를 초기화하는 sequence-to-sequence Transformer 구조를 사용한다. Base 모델의 경우 인코더와 디코더에 6개의 레이어를 사용하고, Large 모델의 경우 각각 12개의 레이어를 사용한다.<br>
   BERT와의 차이점으로는 디코더의 각 레이어가 인코더의 마지막 히든 레이어에 추가적으로 cross-attention을 수행한다는 점과 word prediction 전에 추가적인 feed-forward network을 사용하지 않는다는 점이다. 또한, 모델이 동일한 크기라면 BART는 BERT보다 10% 정도 많은 parameters를 가진다.
   <br><br>
-  - Pre-training BART
+  - Pre-training BART : BART는 손상된 문장들을 복구하는 방식으로 학습하는데 디코더의 출력과 원본 문서의 cross-entropy loss를 최적화하여 훈련된다. 기존 denosing atoencoder는 특정 nosing scheme으로 한정되어 있었으나 BART는 어떤 타입의 document corruption이라도 사용할 수 있다.<br><br>
+    - 5가지의 noise 기법<br>
+    ![noising](https://user-images.githubusercontent.com/86700191/185781649-2d0780dc-86b1-463f-82fa-23714507d439.PNG) <br>
+      - Token Masking : BERT처럼 랜덤한 위치의 Token을 [MASK] 토큰으로 대체한다.
+      - Token Deletion : 입력에서 랜덤한 token들을 삭제한다. Token Masking와의 차이점은 모델은 삭제된 토큰의 위치가 어디인지 알아내야 한다는 점이다.
+      - Text Infilling : 여러 개의 text span을 선택하고, 이를 하나의 [MASK] 토큰으로 대체한다. 이때 span의 길이는 Poisson distribution (λ = 3)를 통해 구하게 된다. (SpanBERT의 아이디어)
+      - Sentence Permutation : document를 문장 단위로 나누고, 랜덤한 순서로 섞는다.
+      - Document Rotation : 랜덤으로 토큰을 하나 선택 후 문서가 해당 토큰부터 시작하도록 문장의 순서를 회전시킨다. 모델은 document의 시작점을 예측해야한다.
 <br><br>
 - Fine-tuning BART
   - Sequence Classification Tasks
