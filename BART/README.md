@@ -22,10 +22,17 @@ BART는 몇 개의 추가 transformer layers 위에 쌓이는 machine translatio
       - Document Rotation : 랜덤으로 토큰을 하나 선택 후 문서가 해당 토큰부터 시작하도록 문장의 순서를 회전시킨다. 모델은 document의 시작점을 예측해야한다.
 <br><br>
 - Fine-tuning BART
-  - Sequence Classification Tasks
-  - Token Classification Tasks
-  - Sequence Generation Tasks
-  - Machine Translation
+  - Sequence Classification Tasks (시퀀스 분류 작업) : 동일한 입력이 인코더 및 디코더에 공급되고 최종 디코더 토큰의 final hidden state가 새로운 multi-class linear classifier(다중 클래스 선형 분류기)에 공급된다. BERT의 CLS 토큰과 유사하지만, 디코더에서 토큰에 대한 representation이 전체 입력에 대한 디코더 상태에 주의할 수 있도록 끝에 추가 토큰을 추가한다.
+  ![classification](https://user-images.githubusercontent.com/86700191/185827684-f4663ea7-a8a5-4235-9b69-e3763bfd6eea.PNG)
+  <br><br>
+  - Token Classification Tasks (토큰 분류 작업) : 전체 document를 인코더와 디코더에 입력한다. 디코더의 top hidden state를 각 단어에 대한 representation으로 사용한다.
+  <br><br>
+  - Sequence Generation Tasks (시퀀스 생성 작업) : BART는 autoregressive 디코더를 갖고 있으므로 abstractive question answering(추상적 질문 답변), summarization(요약)와 같은 Sequence Generation Tasks (시퀀스 생성 작업)에 대해 직접 fine-tuning이 가능하다. 인코더의 input은 input sequence이고, 디코더는 output을 autoregressive하게 생성한다.
+  <br><br>
+  - Machine Translation (기계 번역) : 이전에 있었던 연구에서 pre-trained 인코더를 통합하여 모델을 개선할 수 있음을 보여주었지만, 디코더에서 pre-trained 언어 모델을 사용함으로써 얻는 이득은 제한적이었다. 이에 BART 모델은 모델 전체를 기계번역을 위한 단일 디코더로 사용하고, 여기에 bitext로 학습된 새로운 Encoder 파라미터를 추가하여 해결하였다.<br>
+  BART 인코더의 임베딩 레이어를 새로운 랜덤하게 초기화된 인코더로 교체한다. 이 모델은 end-to-end로 훈련되어 BART가 영어로 denoising 할 수 있는 입력에 외래어를 매핑하도록 새로운 인코더를 훈련시킨다. 이때의 새 인코더는 기존 BART 모델과 다른 vocabulary를 사용할 수 있다. <br>
+  소스 인코더를 두 단계로 훈련하는데, 두 경우 모두 BART 모델의 출력에서 cross-entropy loss(교차 엔트로피 손실)을 backpropagating(역전파)한다. 첫 단계에서는 대부분의 BART parameter를 동결하고 랜덤하게 초기화된 source encoder, BART positional embedding, BART 인코더의 첫번째 레이어의 self-attention input projection matrix만 업데이트한다. 두 번째 단계에서는 적은 수의 iterations에 대해 모든 모델의 parameter를 훈련한다.<br>
+  ![machine_translation](https://user-images.githubusercontent.com/86700191/185827691-50877819-ff1f-46ed-881d-e47f0b87759a.PNG)
 <br><br>
 - Comparing Pre-training Objectives
   - Comparison Objectives
