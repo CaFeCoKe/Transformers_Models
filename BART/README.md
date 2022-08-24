@@ -64,10 +64,35 @@ BART는 몇 개의 추가 transformer layers 위에 쌓이는 machine translatio
     - Pure language Model들은 ELI5에서 최고의 성능을 발휘함 : ELI5의 경우 다른 task에 비해 높은 PPL을 가지고, BART보다 다른 모델의 성능이 더 높다. 그 이유로 input과 output의 연관성이 적어, BART가 좋은 성능을 내지 못했기 때문이다.
     - BART는 가장 일관되게 최고의 성능을 달성함 : Text-infilling을 사용한 BART는 ELI5를 제외한 모든 Task에서 가장 좋은 성능을 보였다.
   <br><br>
-- Large-scale Pre-training Experiments
+- Large-scale Pre-training Experiments : 최근 연구들에서 큰 batch size와 corpora를 사용해 pre-training하는 것이 성능의 향상을 이끌어내었다. 이를 위해 BART를 RoBERTa 모델과 같은 규모로 실험한다.
   - Experimental Setup
-  - Discriminative Tasks
+    - 인코더와 디코더 각각 12개의 레이어인 large model을 pre-train
+    - RoBERTa처럼 8000 batch size, 500000 step의 학습 진행
+    - 문서는 GPT-2와 동일한 BPE(byte-pair encoding) 방식으로 토크나이징
+    - text infilling과 sentence permutation을 조합하여 사용
+    - 각 문서에서 토큰의 30%를 마스킹하고, 모든 문장들을 permute
+    - 마지막 10%의 training step에서는 dropout을 적용하지 않음
+    - RoBERTa와 같은 데이터를 사용
+    - 사이즈가 큰 pre-trained 모델이 더 성능이 좋을 것이라 가설을 세움
+  <br><br>
+  - Discriminative Tasks <br>
+  ![discriminative_Task](https://user-images.githubusercontent.com/86700191/186358147-634cf899-f837-4478-b309-e425f6e9cd88.PNG) <br>
+  BART와 다른 모델들로 SQuAD와 GLUE 태스크를 적용한 결과이다. 전체적으로 BART는 대부분의 task에서 다른 모델들과 비슷한 성능을 보인다. 이는 BART가 generation task에서 성능 향상을 이뤘는데, 이것이 discriminative task에는 영향을 미치지 않았다는 것을 의미한다.
+  <br><br>
   - Generation Tasks
+    - Summarization <br>
+    ![generation_task](https://user-images.githubusercontent.com/86700191/186358153-2e81b2c6-16e3-41cd-ac0d-6f9b5a8d47cc.PNG) <br>
+    두 개의 요약 데이터 세트인 CNN/DailyMail과 XSum에 대한 결과이다. CNN/DailyMail의 요약은 원본 문장과 유사한 경향이 있다. Extractive 모델은 이 task에선 매우 경쟁력이 있다. 그럼에도 불구하고 BART는 기존의 모든 작업을 능가한다. <br>
+    대조적으로, XSum은 매우 abstractive하기 때문에 Extractive 모델은 성능이 떨어진다. BART는 모든 ROUGE metrics에서 가장 높은 성능을 보이며 질적으로 시료품질이 높다는 것을 보여준다.
+    <br><br>
+    - Dialogue <br>
+    ![dialogue](https://user-images.githubusercontent.com/86700191/186369714-9fb9835d-04f7-4815-ade1-7791a7d91acf.PNG) <br>
+    ConvAI2 데이터셋을 활용하여 실험을 한 결과이다. 해당 태스크는 이전 문맥과 화자의 페르소나를 고려하여 답변을 생성해야한다. BART는 automated metrics에서 이전 모델을 능가한다.
+    <br><br>
+    - Abstractive QA <br>
+    ![abstractive_QA](https://user-images.githubusercontent.com/86700191/186369723-09c63fb5-4468-4eee-a433-e7326e697b9e.PNG) <br>
+    ELI5 데이터셋을 활용하여 긴 자유형식의 답변을 생성하는 능력을 평가한다. 이전 연구보다 ROUGE-L에서 1.2점 높인 성능을 보였지만 정답과 질문의 연관성이 약하기 때문에 해당 데이터셋은 어려운 문제로 남아있다.
+    <br><br>
   - Translation
 <br><br>
 - Qualitative Analysis
