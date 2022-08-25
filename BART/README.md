@@ -93,6 +93,12 @@ BART는 몇 개의 추가 transformer layers 위에 쌓이는 machine translatio
     ![abstractive_QA](https://user-images.githubusercontent.com/86700191/186369723-09c63fb5-4468-4eee-a433-e7326e697b9e.PNG) <br>
     ELI5 데이터셋을 활용하여 긴 자유형식의 답변을 생성하는 능력을 평가한다. 이전 연구보다 ROUGE-L에서 1.2점 높인 성능을 보였지만 정답과 질문의 연관성이 약하기 때문에 해당 데이터셋은 어려운 문제로 남아있다.
     <br><br>
-  - Translation
+  - Translation <br>
+  ![traslation](https://user-images.githubusercontent.com/86700191/186582089-9ed9176c-d6bb-45ca-ba7a-9fa544ac973f.PNG) <br>
+  back-translation data로 보강된 WMT16 Romanian-English 데이터셋을 이용하였고, BART가 영어로 de-noise 할 수 있도록 루마니아어를 매핑하기 위한 6-layer 트랜스포머를 source encoder를 사용했다. lage-size Transformer보다 성능이 향상된 것을 볼 수 있었으나 back-translation data가 없을 경우 BART는 번역 태스크에서 효과적이지 못했고, 오버피팅될 가능성이 높았다. 따라서 정규화 기술에 대한 연구가 추가로 필요할 것 같다.
 <br><br>
 - Qualitative Analysis
+  - BART가 생성한 summary 예시 <br>
+  ![summary](https://user-images.githubusercontent.com/86700191/186588305-7262dddf-3631-46c9-8b25-ecb9ee9398fc.PNG) <br><br>
+  모델 출력은 유창하고 문법적인 영어이다. 그러나 모델 출력은 입력에서 거의 복사되지 않는 매우 추상적이며 출력은 일반적으로 사실적으로 정확하며, 입력 문서 전반에 걸쳐 배경 지식을 뒷받침하는 증거를 통합한다. 이러한 샘플은 BART pretraining이 자연어 이해와 생성의 강력한 조합을 학습했음을 보여준다.
+<br><br>
