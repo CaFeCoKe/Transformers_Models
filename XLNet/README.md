@@ -8,4 +8,30 @@
   하지만 BERT에서 pre-training 시 사용되는 [MASK]와 같은 인공기호은 실제 데이터를 fine-tuning 할 때에는 존재하지 않으므로 'pretrain-finetune discrepancy' 문제가 발생한다. 또한 예측된 토큰들은 입력에서 마스킹이 되기 때문에 BERT에서는 AR 언어모델과 같이 product rule을 사용하여 joint probability(결합확률)을 모델링할수 없다. 
   즉, BERT에서는 unmasked 토큰을 고려할 때 예측된 토큰이 서로 독립적이라 가정하는데 이것은 자연어에서 일반적인 high-order(고차), long-range dependency(장거리 의존성) 특성을 지나치게 단순화하게 된다.
   <br><br>
-  
+  - 기존 language pretraining objectives의 장단점에 따라 AR, AR의 장점을 모두 활용하는 일반화된 AR 언어 모델인 XLNet을 제안함
+    - 기존 AR 모델에서처럼 고정된 순방향 또는 역방향 인수분해 순서를 사용하는 대신 가능한 모든 순열의 예상 로그 가능성을 최대화한다.
+    - 일반화된 AR 언어 모델로서 XLNet은 데이터 손상에 의존하지 않아 'pretrain-finetune discrepancy'를 겪지 않는다. 또한, product rule을 사용하여 joint probability(결합확률)을 모델링하기 위해 BERT에서 만든 independence assumption(독립성 가정)을 없앤다.
+    - Transformer-XL의 segment recurrence mechanism(세그먼트 반복 메커니즘)과 relative encoding scheme(상대 인코딩 체계)을 pre-training에 통합시킨다.
+    - 인수분해 순서가 임의적이고 대상이 모호하기 때문에 Transformer(-XL) architecture를 바로 적용하지 못한다. 모호성을 제거하기 위해 Transformer(-XL) network를 다시 reparameterize(매개변수화)시킨다.
+<br><br>
+- Proposed Method
+  - Background : AR language modeling과 BERT의 language model pre-training을 비교한다. AR 모델은 likelihood를 maximizing하는 방향으로 pre-traing을 진행한다. BERT는 Denosing AE가 기반인 모델이다. 두 가지 pre-train의 장단점을 비교한다. 
+    - Independence Assumption : BERT는 마스킹된 token이 독립되게 재구성된다는 가정에 기초하여 joint conditional probability를 인수분해 한다. 반면에 AR language modeling은 product rule을 사용하여 인수분해 한다.
+    <br><br>
+    - Input noise : BERT의 input에는 downstream task에서는 사용하지 않는 [MASK]와 같은 기호가 사용되기 때문에 'pretrain-finetune discrepancy'가 발생한다. 그에 비해 AR 언어 모델링은 input corruption(입력 손상)에만 의존하지 않으며 이 문제로 어려움을 겪지 않는다.
+    <br><br>
+    - Context dependency : AR representation은 특정 위치의 토큰까지 단방향으로 계산되지만 BERT representation은 bidirectional contextual information에 접근할 수 있기 때문에 BERT가 bidirectional context를 더 잘 capture할 수 있도록 pre-train된다.
+  <br><br>
+  - Objective: Permutation Language Modeling 
+  <br><br>
+  - Architecture: Two-Stream Self-Attention for Target-Aware Representations
+  <br><br>
+  - Incorporating Ideas from Transformer-XL
+  <br><br>
+  - Modeling Multiple Segments
+  <br><br>
+  - Discussion
+<br><br>
+- Experiments
+<br><br>
+- Conclusions
