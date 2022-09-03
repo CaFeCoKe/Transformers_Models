@@ -22,7 +22,14 @@
     <br><br>
     - Context dependency : AR representation은 특정 위치의 토큰까지 단방향으로 계산되지만 BERT representation은 bidirectional contextual information에 접근할 수 있기 때문에 BERT가 bidirectional context를 더 잘 capture할 수 있도록 pre-train된다.
   <br><br>
-  - Objective: Permutation Language Modeling 
+  - Objective: Permutation Language Modeling : AR 모델의 장점을 유지하고 모델이 bi-directional context를 capture할 수 있도록 permutation language modeling objective를 제안한다.
+    - permutation language modeling의 수식<br>
+    ![permute](https://user-images.githubusercontent.com/86700191/188071252-7d7e9fae-9f35-4b7a-b768-3ac04d4d8761.PNG) <br>
+    x : 텍스트 시퀀스, z :  factorization order , Z(T) : 길이가 t인 시퀀스의 모든 가능한 순열조합들, Θ : 모델 파라미터(공유됨)  <br>
+    길이가 T인 시퀀스 x에는 T!개의 서로다른 순서가 autoregressive factorization을 위해 존재한다. 직관적으로 만약 모델 파라미터들이 모든 factorization orders에 대하여 공유된다면, 모델은 양방향의 모든 위치에서 정보를 얻을 수 있도록 학습된다.
+    <br><br>
+    - Remark on Permutation : 제안하는 방식은 sequence 순서가 아닌 인수분해 순서만 바꾼다. 즉 원래의 sequence 순서를 유지하고 원본 sequence에 해당하는 positional encoding을 사용하여 인수분해 순서 permutation에 해당하는 attention mask를 얻는다. <br>
+    ![permutation_language_modeling](https://user-images.githubusercontent.com/86700191/188073268-09536c2d-78b9-4372-85ea-965a2f07b519.PNG)
   <br><br>
   - Architecture: Two-Stream Self-Attention for Target-Aware Representations
   <br><br>
