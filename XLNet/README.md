@@ -31,7 +31,27 @@
     - Remark on Permutation : 제안하는 방식은 sequence 순서가 아닌 인수분해 순서만 바꾼다. 즉 원래의 sequence 순서를 유지하고 원본 sequence에 해당하는 positional encoding을 사용하여 인수분해 순서 permutation에 해당하는 attention mask를 얻는다. <br>
     ![permutation_language_modeling](https://user-images.githubusercontent.com/86700191/188073268-09536c2d-78b9-4372-85ea-965a2f07b519.PNG)
   <br><br>
-  - Architecture: Two-Stream Self-Attention for Target-Aware Representations
+  - Architecture: Two-Stream Self-Attention for Target-Aware Representations : permutation language modeling은 standard Transformer parameterization에서 naive하게 작동되지 않는다. 이 문제를 확인하기 위해 표준 소프트맥스 공식을 사용하여 차수 분포를 parameterize해본다. <br>
+  ![softmax](https://user-images.githubusercontent.com/86700191/188366768-a4aae51a-577f-4061-867c-03cb40babc72.png) <br>
+  hΘ(X z<t)은 마스킹 후 공유된 Transformer 네트워크를 통해 생성된  X z<t의 hidden representation으로, 예측할 단어의 위치 zt에 의존하지 않는다. 결과적으로, target 위치에 상관없이 같은 분포가 예측되기 때문에 유용한 representation을 학습할 수 없다. 이런 문제를 피하기 위해서 target 위치를 인식하기 위해 아래와 같이 다음 토큰의 분포를 re-parameterize 하는 것을 제안한다. <br>
+  ![reparameterize](https://user-images.githubusercontent.com/86700191/188367043-5ddf154a-4f4b-496f-8995-f9c8d5d64086.PNG) <br>
+  gΘ(X z<t, zt) 는 target position인 zt를 추가적으로 입력값으로 받는 새로운 유형의 representation이다.
+    - Two-Stream Self-Attention : target-aware representaiton 아이디어는 target 예측에 있어서 모호함을 없애주는 반면, gθ(X z<t, zt) 를 어떻게 계산할 것인가에 대한 문제가 남는다. 목표 위치 zt에 "stand"하고 Attention를 통해 컨텍스트 X z<t에서 정보를 수집하기 위해 위치 zt에 의존할 것을 제안한다. 이 parameterization을 위해  standard Transformer 아키텍처와 모순되는 2가지 요구 조건이 있다. <br>
+      - 토큰 x (zt) 와 gΘ(X z<t, zt)을 예측하기 위해서는 zt의 위치만 사용하고, x(zt)의 내용은 사용해서는 안된다.
+      - 다른 토큰 x(zj)를 예측할때(j>t), 전체 문맥 정보를 제공하기 위해서는  gθ(X z<t, zt)가 반드시 x (zt)를 인코딩해야한다. <br>
+
+    이러한 문제를 해결하기 위해서 1개가 아닌 2개의 hidden representation을 제안한다.
+      - content representation hθ(xz≤t)은 Standard Transformer의 hidden state과 같은 역할로, 문맥과 x(zt) 자신을 인코딩한다.
+      - query representation gθ(xz<t , zt)은 X(z<t)와 위치 zt에 대한 문맥 정보에 접근할수 있으며 내용 x(zt)에는 접근 할 수 없다. <br>
+    
+    각 self attention layer마다 2개의 representation이 공유된 파라미터 셋을 가지고 업데이트된다. <br>
+    ![representation](https://user-images.githubusercontent.com/86700191/188372347-b0625644-c017-4962-a4af-8cd7ecf208e4.PNG) <br><br>
+    ![two_stream_selfattention](https://user-images.githubusercontent.com/86700191/188372248-72205696-b04b-4fa6-89a0-40d780d2cd5b.png) <br>
+    - A detailed illustration of the content stream <br><br>
+    ![content](https://user-images.githubusercontent.com/86700191/188372847-80c94e06-ed74-4405-8181-55b59e537b3b.png) 
+    <br><br>
+    - A detailed illustration of the query stream <br><br>
+    ![query](https://user-images.githubusercontent.com/86700191/188372852-98ce7e91-6ff5-4b40-998a-e7678eab09b6.png)
   <br><br>
   - Incorporating Ideas from Transformer-XL
   <br><br>
