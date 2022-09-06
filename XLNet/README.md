@@ -25,7 +25,7 @@
   - Objective: Permutation Language Modeling : AR 모델의 장점을 유지하고 모델이 bi-directional context를 capture할 수 있도록 permutation language modeling objective를 제안한다.
     - permutation language modeling의 수식<br>
     ![permute](https://user-images.githubusercontent.com/86700191/188071252-7d7e9fae-9f35-4b7a-b768-3ac04d4d8761.PNG) <br>
-    x : 텍스트 시퀀스, z :  factorization order , Z(T) : 길이가 t인 시퀀스의 모든 가능한 순열조합들, Θ : 모델 파라미터(공유됨)  <br>
+    x : 텍스트 시퀀스, z :  factorization order , Z(T) : 길이가 t인 시퀀스의 모든 가능한 순열조합들, θ : 모델 파라미터(공유됨)  <br>
     길이가 T인 시퀀스 x에는 T!개의 서로다른 순서가 autoregressive factorization을 위해 존재한다. 직관적으로 만약 모델 파라미터들이 모든 factorization orders에 대하여 공유된다면, 모델은 양방향의 모든 위치에서 정보를 얻을 수 있도록 학습된다.
     <br><br>
     - Remark on Permutation : 제안하는 방식은 sequence 순서가 아닌 인수분해 순서만 바꾼다. 즉 원래의 sequence 순서를 유지하고 원본 sequence에 해당하는 positional encoding을 사용하여 인수분해 순서 permutation에 해당하는 attention mask를 얻는다. <br>
@@ -37,24 +37,34 @@
   ![reparameterize](https://user-images.githubusercontent.com/86700191/188367043-5ddf154a-4f4b-496f-8995-f9c8d5d64086.PNG) <br>
   gΘ(X z<t, zt) 는 target position인 zt를 추가적으로 입력값으로 받는 새로운 유형의 representation이다.
     - Two-Stream Self-Attention : target-aware representaiton 아이디어는 target 예측에 있어서 모호함을 없애주는 반면, gθ(X z<t, zt) 를 어떻게 계산할 것인가에 대한 문제가 남는다. 목표 위치 zt에 "stand"하고 Attention를 통해 컨텍스트 X z<t에서 정보를 수집하기 위해 위치 zt에 의존할 것을 제안한다. 이 parameterization을 위해  standard Transformer 아키텍처와 모순되는 2가지 요구 조건이 있다. <br>
-      - 토큰 x (zt) 와 gΘ(X z<t, zt)을 예측하기 위해서는 zt의 위치만 사용하고, x(zt)의 내용은 사용해서는 안된다.
-      - 다른 토큰 x(zj)를 예측할때(j>t), 전체 문맥 정보를 제공하기 위해서는  gθ(X z<t, zt)가 반드시 x (zt)를 인코딩해야한다. <br>
+      - 토큰 x (zt) 와 gθ(X z<t, zt)을 예측하기 위해서는 zt의 위치만 사용하고, x(zt)의 내용은 사용해서는 안된다.
+      - 다른 토큰 x(zj)를 예측할때(j>t), 전체 문맥 정보를 제공하기 위해서는  gθ(X z<t, zt)가 반드시 x (zt)를 인코딩해야한다. <br><br>
 
-    이러한 문제를 해결하기 위해서 1개가 아닌 2개의 hidden representation을 제안한다.
+      이러한 문제를 해결하기 위해서 1개가 아닌 2개의 hidden representation을 제안한다.
       - content representation hθ(xz≤t)은 Standard Transformer의 hidden state과 같은 역할로, 문맥과 x(zt) 자신을 인코딩한다.
-      - query representation gθ(xz<t , zt)은 X(z<t)와 위치 zt에 대한 문맥 정보에 접근할수 있으며 내용 x(zt)에는 접근 할 수 없다. <br>
+      - query representation gθ(xz<t , zt)은 X(z<t)와 위치 zt에 대한 문맥 정보에 접근할수 있으며 내용 x(zt)에는 접근 할 수 없다. <br><br>
     
-    각 self attention layer마다 2개의 representation이 공유된 파라미터 셋을 가지고 업데이트된다. <br>
-    ![representation](https://user-images.githubusercontent.com/86700191/188372347-b0625644-c017-4962-a4af-8cd7ecf208e4.PNG) <br><br>
-    ![two_stream_selfattention](https://user-images.githubusercontent.com/86700191/188372248-72205696-b04b-4fa6-89a0-40d780d2cd5b.png) <br>
+      각 self attention layer마다 2개의 representation이 공유된 파라미터 셋을 가지고 업데이트된다. <br>
+      ![representation](https://user-images.githubusercontent.com/86700191/188372347-b0625644-c017-4962-a4af-8cd7ecf208e4.PNG) <br><br>
+      ![two_stream_selfattention](https://user-images.githubusercontent.com/86700191/188372248-72205696-b04b-4fa6-89a0-40d780d2cd5b.png) <br><br>
+    - Partial Prediction : permutation language modeling은 몇 가지 이점이 있지만 순열로 인해 최적화가 어렵고 수렴이 오래걸린다. 이를 위해 인수분해 순서에서 마지막 몇 개의 토큰의 예측만 이용하는 방법을 사용한다. Z를 non-target subsequence Z≤c and a target subsequence Z>c로 분할한다. c는 cutting point이다.
+    objective는 non-target subsequence에서 target subsequence conditioned의 log-likelihood를 maximize하는 것이다. Z>c는 인수분해 순서 Z가 주어진 sequence에서 가장 긴 context를 가지므로 target으로 선택된다. hyperparameter K는 prediction단계에서 1/K개의 token을 선택하기 위해 사용된다. unselected token들은 query representation이 계산되지 않기 때문에 메모리를 아끼고 속도를 향상시킬 수 있다.<br>
+    ![Partial Prediction](https://user-images.githubusercontent.com/86700191/188594117-ec5f3326-0bb9-4e0b-a67a-e1dd7a8ab2b5.PNG)
+  <br><br>
+  - Incorporating Ideas from Transformer-XL : Transformer-XL의 segment recurrence mechanism(세그먼트 반복 메커니즘)과 relative positional encoding scheme(상대 인코딩 체계)을 pre-training에 통합시킨다. 
+  제안된 permutation setting에 recurrence mechanism을 통합하고 previous segment의 hidden state를 다시 사용할 수 있는 방법을 설명한다. 긴 sequence에서 두개의 segment를 입력으로 받는다고 가정한다.<br>
+  ![1](https://user-images.githubusercontent.com/86700191/188584205-c01ffe9c-7020-4f9e-8d92-6236e788b9fd.PNG) <br>
+  z˜ 와 z를 [1 · · · T] 와 [T + 1 · · · 2T]의 permutation이라 가정 후 permutation z˜ 를 통해 첫 번째 segment를 계산하고 각 layer m에 대해 얻어진 content representation h˜(m)을 cache한다. 다음 segment x에서 memory를 포함하는 attention update는 다음과 같다.<br>
+  ![2](https://user-images.githubusercontent.com/86700191/188584212-0b6e3577-4b3c-440e-a411-25e02fa6c838.PNG) <br> ([.,.]은 sequence dimension사이에 concatenation 의미) <br>
+   positional encoding은 original sequence의 실제 position에만 의존하기 때문에 h˜(m)이 계산되면 z˜ 와는 독립적이게 된다. 이를 이용하여 이전 segment의 인수분해 순서에 대한 정보 없이 memory를 caching하여 다시 사용할 수 있다. 모델은 마지막 segmentt의 모든 인수분해 순서에 대해 메모리를 활용하는 방법을 train한다고 추측된다.(아래 그림 참조)
+  그리고 query stream도 동일한 방법으로 계산할 수 있다.
+  <br><br>
     - A detailed illustration of the content stream <br><br>
     ![content](https://user-images.githubusercontent.com/86700191/188372847-80c94e06-ed74-4405-8181-55b59e537b3b.png) 
     <br><br>
     - A detailed illustration of the query stream <br><br>
     ![query](https://user-images.githubusercontent.com/86700191/188372852-98ce7e91-6ff5-4b40-998a-e7678eab09b6.png)
-  <br><br>
-  - Incorporating Ideas from Transformer-XL
-  <br><br>
+    <br><br>
   - Modeling Multiple Segments
   <br><br>
   - Discussion
