@@ -65,9 +65,17 @@
     - A detailed illustration of the query stream <br><br>
     ![query](https://user-images.githubusercontent.com/86700191/188372852-98ce7e91-6ff5-4b40-998a-e7678eab09b6.png)
     <br><br>
-  - Modeling Multiple Segments
+  - Modeling Multiple Segments : 많은 downstream task들은 multiple input segment를 포함하고 있다. 예를 들면 QA같은 경우 question과 context paragraph로 구성되어있다. BERT와 마찬가지로 랜덤하게 선택된 두개의 segment를 concatenation(연결)하여 하나의 sequence로 permutation language modeling을 진행한다. 
+  모델에 대한 입력은 BERT와 동일하게 [CLS, A, SEP, B, SEP]로 되어있다. two-segment data format을 따르지만 ablation study에서 일관적인 향상을 하지 못했기 때문에 next sentence prediction을 수행하지 않는다.
+    - Relative Segment Encodings : BERT의 경우 word embedding에 각 position에 따라 absolute segment embedding을 적용하였지만  XLNet은 transformer-XL에서 제안한 relative segment encoding을 확장하여 사용한다.
+    sequence에서 i와 j인 position pair이 주어지고 동일한 segment에서 온 경우 Sij = S+ 또는 Sij = S-를 인코딩하는 segment를 사용한다. S+와 S-는 각 attention head에 대해 learnable(학습 가능한) 모델 파라미터이다. position pair가 어떤 특정 segment로부터 왔는지 반대로 두 위치가 동일한 segment 내에 있는지 여부만 고려한다. 즉, 위치 간의 관계를 모델링하는 것이다.<br>
+    relative segment encoding의 이점은 두가지가 있다. 첫번째는 relative encoding의 inductive bias(귀납적 편향)는 일반화를 향상시킨다. 두번째는 absolute segment encoding을 사용하여 불가능한 두 개 이상의 segment가 있는 task에 대한 fine-tune 가능성을 열어준다는 것이다.
   <br><br>
-  - Discussion
+  - Discussion : BERT와 XLNet은 sequence token의 subset만을 예측한다는 것을 알 수 있었다. 모든 토큰이 mask처리되면, BERT는 의미있는 예측을 할 수 없기 때문에 필수적인 선택이다. 또한 BERT와 XLNet에서 partial prediction은 충분한 context가 있는 token만 예측하여 최적화가 어려워진다. 
+    - BERT와 XLNet의 차이점
+    ![BERTvsXLNet](https://user-images.githubusercontent.com/86700191/188823106-7c71febc-ed1f-426d-b0b0-05859e207fa9.PNG) <br>
+    [New,York,is,a,city]에 대해 비교한다. 예시에서 [New,York] 두 개의 token을 예측하고 log p(New York | is a city)를 maximize한다고 가정한다. 또한, XLNet의 인수분해 순서는 [is,a,city,New,York]이라고 가정한다. <br>
+    XLNet은 쌍(New, York) 간의 dependency를 capture 할 수 있으며, BERT는 이를 생략하게 된다. BERT는 (New, city) 및 (York, city)와 같은 일부 dependency pair를 학습하지만, XLNet은 항상 동일한 대상이 주어지면 더 많은 dependency pair을 학습하고 "denser(더 밀집)"한 효과적인 훈련을 한다는 것은 분명하다.
 <br><br>
 - Experiments
 <br><br>
