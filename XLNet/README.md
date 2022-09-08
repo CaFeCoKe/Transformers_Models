@@ -78,5 +78,15 @@
     XLNet은 쌍(New, York) 간의 dependency를 capture 할 수 있으며, BERT는 이를 생략하게 된다. BERT는 (New, city) 및 (York, city)와 같은 일부 dependency pair를 학습하지만, XLNet은 항상 동일한 대상이 주어지면 더 많은 dependency pair을 학습하고 "denser(더 밀집)"한 효과적인 훈련을 한다는 것은 분명하다.
 <br><br>
 - Experiments
+  - Pre-training and Implementation : Pre-training을 위해서 XLNet도 BERT를 따라서 합이 16GB 정도 되는 BooksCorpus와 English Wikipedia를 사용하며, 추가적으로 15GB의 Giga5, 너무 짧거나 질이 떨어지는 문장을 휴리스틱하게 필터링하는 전처리 작업을 한 19GB의 Clue Web2012-B와 78GB의 Common Crawl dataset도 사용했다. 
+  Google의 SentencePiece tokenizer를 사용하였고 위의 5개의 dataset 각각 순서대로 2.78B, 1.09B, 4.75B, 4.30B, 19.97B 개의 token을 얻을 수 있었고, 따라서 총 32.89B의 token으로 pre-training을 진행했다. <br>
+  XLNet-Large는 512 TPU v3 환경에서 5.5일 동안 약 500K step으로 학습되었다. Batch size는 8192이었으며, Linear learning rate decay를 적용한 Adam optimizer를 사용했다. recurrence mechanism이 도입되었기 때문에 순방향과 역방향 각각이 배치 크기의 절반을 차지하는 bidirectional 데이터 입력 pipeline을 사용한다.
+  <br><br>
+  - Fair Comparison with BERT
+  <br><br>
+  - Comparison with RoBERTa: Scaling Up
+  <br><br>
+  - Ablation Study
+  <br><br>
 <br><br>
 - Conclusions
