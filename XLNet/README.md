@@ -83,10 +83,32 @@
   XLNet-Large는 512 TPU v3 환경에서 5.5일 동안 약 500K step으로 학습되었다. Batch size는 8192이었으며, Linear learning rate decay를 적용한 Adam optimizer를 사용했다. recurrence mechanism이 도입되었기 때문에 순방향과 역방향 각각이 배치 크기의 절반을 차지하는 bidirectional 데이터 입력 pipeline을 사용한다.
   <br><br>
   - Fair Comparison with BERT
+  ![compare_BERT](https://user-images.githubusercontent.com/86700191/189803843-4f245b44-44b3-43c2-9132-0ca3f68901ad.PNG) <br><br>
+  가장 좋은 성능을 보인 3가지의 BERT 변형과 동일한 데이터 및 하이퍼파라미터로 훈련된 XLNet을 비교한다. XLNet은 모든 데이터 세트에서 BERT의 성능을 능가한다는 것을 볼 수 있다.
   <br><br>
   - Comparison with RoBERTa: Scaling Up
+    - RACE
+    ![compare_RoBERTa_RACE](https://user-images.githubusercontent.com/86700191/189803846-46a7816e-b478-49ea-9c86-cb6f7cf79389.PNG) <br><br>
+    - SQuAD
+    ![compare_RoBERTa_SQuAD](https://user-images.githubusercontent.com/86700191/189803848-12e6641c-7964-405a-90eb-20eb8a5b9d03.PNG) <br><br>
+    - GLUE
+    ![compare_GLUE](https://user-images.githubusercontent.com/86700191/189803850-f24f0c2b-746c-474c-b492-98c3fd6fab20.PNG) <br><br>
+    - Error rate (text classification tasks)
+    ![compare_textclassification](https://user-images.githubusercontent.com/86700191/189805379-f48ef277-a5a3-498f-b498-61f0273548ed.PNG) <br><br>
+  
+    RoBERTa와 비교적 공정한 비교를 위해 전체 데이터를 기반으로 하며 RoBERTa의 하이퍼파라미터를 재사용한다. 더 긴 context를 포함하는 SQuAD 및 RACE와 같은 explicit reasoning task(명시적 추론 작업)의 경우, XLNet의 성능 이득은 일반적으로 더 크다. 이 우월성은 XLNet의 Transformer-XL backcone에서 비롯된다 볼 수 있다.
+    또한, MNLI(>390K), Yelp(>560K), Amazon(>3M)과 같이 이미 풍부한 감독 예제를 가지고 있는 분류 작업의 경우 XLNet은 여전히 상당한 이득으로 이어진다.
   <br><br>
   - Ablation Study
-  <br><br>
+  ![ablation](https://user-images.githubusercontent.com/86700191/189807920-70c952d6-ad95-447d-9000-be782e8e6fc6.PNG) <br><br>
+  설계 선택의 중요성을 이해하기 위해 크게 다음의 3가지 측면에서 ablation study를 진행한다. 
+    - permutation language modeling objective의 효과
+    - Transformer-XL backbone과 segment-level recurrence (i.e. using memory)의 중요성
+    - span-based prediction과 bidirectional input pipeline, 그리고 next sentence prediction의 필요성
+    <br><br>
+    
+    XLNet과 비교하는 모델로는 Original BERT-Base (row 1)과 BERT에서 쓰는 Denoising auto-encoding (DAE) objective로 학습하고 bidirectional input pipeline이 적용된 Transformer-XL (row 2)을 선정했다. 모든 모델은 BERT-Base의 hyperparameter와 동일하게 맞춘 12 layer의 구조를 갖고 있으며, BooksCorpus와 Wikipedia로 pre-training하였다. 위의 모든 결과는 5번의 결과의 중간값(median)이다.<br>
+    rows 1~4에서 Transformer-XL와 permutation language modeling objective의 우수성을 XLNet-Base 모델이 BERT보다 좋은 성능을 보인 것으로 증명된다. 또한, row 5에서 memory caching mechanism을 제거하게 되면 가장 긴 context를 처리하는 RACE의 경우 성능이 확실히 떨어지는 것으로 memory caching을 사용해야 성능이 좋다는 것을 알 수있다. 
+    rows 6~7에서 span-based prediction과 bidirectional input pipeline이 XLNet에서 중요한 역할을 한다는 것을 보여준다. 마지막으로, row 8에서는 원래의 BERT에서 제안된 next sentence prediction이 성능의 향상으로 이어지는 것은 아니라는 것을 발견하여 XLNet은 next sentence prediction을 사용하지 않는다.
 <br><br>
-- Conclusions
+- Conclusions : XLNet은 AR과 AE 방법의 장점을 결합하기 위해 permutation language modeling(순열 언어 모델링) objective를 사용하는 일반화된 AR pretraining 방법이다. XLNet의 신경 아키텍처는 Transformer-XL와 two-stream attention mechanism의 통합을 포함하여 AR objective와 함께 원활하게 작동하도록 개발되었다. XLNet은 다양한 task에 대한 이전의 pretraining objective에 비해 상당한 개선을 보여준다.
