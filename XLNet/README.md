@@ -112,3 +112,6 @@
     rows 6-7에서 span-based prediction과 bidirectional input pipeline이 XLNet에서 중요한 역할을 한다는 것을 보여준다. 마지막으로, row 8에서는 원래의 BERT에서 제안된 next sentence prediction이 성능의 향상으로 이어지는 것은 아니라는 것을 발견하여 XLNet은 next sentence prediction을 사용하지 않는다.
 <br><br>
 - Conclusions : XLNet은 AR과 AE 방법의 장점을 결합하기 위해 permutation language modeling(순열 언어 모델링) objective를 사용하는 일반화된 AR pretraining 방법이다. XLNet의 신경 아키텍처는 Transformer-XL와 two-stream attention mechanism의 통합을 포함하여 AR objective와 함께 원활하게 작동하도록 개발되었다. XLNet은 다양한 task에 대한 이전의 pretraining objective에 비해 상당한 개선을 보여준다.
+<br><br>
+- 예시 코드에 쓰인 모델 구조 <br><br>
+![XLNet](https://user-images.githubusercontent.com/86700191/191200131-f29976cf-a5a6-4f39-bfca-f857d4a4470d.png)
