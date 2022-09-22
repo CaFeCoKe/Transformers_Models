@@ -15,9 +15,12 @@
   ![math](https://user-images.githubusercontent.com/86700191/191441460-af3d690b-1ea3-4062-b17d-2d0ef89d9a4c.PNG) <br>
   이 분포를 사용하여 샘플링하면 low-resource language와 관련된 토큰 수가 증가하고 high-resource language(고자원 언어)에 대한 bias가 완화된다. 특히, 이것은 low-resource language의 단어가 문자 수준에서 분할되는 것을 방지한다.
   <br><br>
-  - Causal Language Modeling (CLM)
+  - Causal Language Modeling (CLM) : 문장 P(wt | w1,..., wt-1, θ)에서 주어진 단어의 확률을 모델링하도록 훈련된 Transformer language model으로 구성된다. Transformers는 이전 hidden state를 현재 batch로 전달하여 batch의 첫 번째 단어에 context를 제공할 수 있다.
+  그러나 이 기술은 cross-lingual setting(교차 언어 설정)으로 확장되지 않으므로 단순성을 위해 각 배치의 첫 번째 단어를 context 없이 그대로 둔다.
   <br><br>
-  - Masked Language Modeling (MLM)
+  - Masked Language Modeling (MLM) : text stream에서 BPE 토큰의 15%를 무작위로 샘플링하고, 80%는 [MASK] 토큰으로 대체하며, 10%는 무작위 토큰으로 변경하고, 10%는 시간을 변경하지 않고 유지한다.
+   기존 MLM와의 차이점에는 문장 쌍 대신 임의의 문장 수(256개의 토큰으로 자름)의 text stream이 사용된다. 희귀 토큰과 빈번한 토큰 사이의 불균형에 대응하기 위해 text stream의 토큰은 가중치가 invert frequencies(반전 주파수)의 제곱근에 비례하는 다항 분포에 따라 샘플링한다. <br>
+  ![MLM](https://user-images.githubusercontent.com/86700191/191736531-e4634d76-dda2-434c-96dd-456af8740fb6.PNG)
   <br><br>
   - Translation Language Modeling (TLM)
   <br><br>
