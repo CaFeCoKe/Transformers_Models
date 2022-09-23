@@ -19,9 +19,14 @@
   그러나 이 기술은 cross-lingual setting(교차 언어 설정)으로 확장되지 않으므로 단순성을 위해 각 배치의 첫 번째 단어를 context 없이 그대로 둔다.
   <br><br>
   - Masked Language Modeling (MLM) : text stream에서 BPE 토큰의 15%를 무작위로 샘플링하고, 80%는 [MASK] 토큰으로 대체하며, 10%는 무작위 토큰으로 변경하고, 10%는 시간을 변경하지 않고 유지한다.
-   기존 MLM와의 차이점에는 문장 쌍 대신 임의의 문장 수(256개의 토큰으로 자름)의 text stream이 사용된다. 희귀 토큰과 빈번한 토큰 사이의 불균형에 대응하기 위해 text stream의 토큰은 가중치가 invert frequencies(반전 주파수)의 제곱근에 비례하는 다항 분포에 따라 샘플링한다. <br>
+   기존 MLM와의 차이점에는 문장 쌍 대신 임의의 문장 수(256개의 토큰으로 자름)의 text stream이 사용된다. 희귀 토큰과 빈번한 토큰 사이의 불균형에 대응하기 위해 text stream의 토큰은 가중치가 invert frequencies(반전 주파수)의 제곱근에 비례하는 다항 분포에 따라 샘플링한다. <br><br>
   ![MLM](https://user-images.githubusercontent.com/86700191/191736531-e4634d76-dda2-434c-96dd-456af8740fb6.PNG)
   <br><br>
-  - Translation Language Modeling (TLM)
+  - Translation Language Modeling (TLM) : CLM 및 MLM objective는 unsupervised하며 monolingual data(단일 언어)만을 필요로 한다. 하지만 사용 가능한 병렬 데이터를 활용하질 못한다. cross-lingual pretraining을 개선하기 위해 새로운 translation language modeling (TLM)을 만들었다.
+  TLM objective는 monolingual text stream를 고려하는 대신 병렬 문장을 연결하는 MLM의 확장이다. source 및 target 문장 모두에서 단어를 무작위로 마스킹한다. <br>
+  예를 들어 영어 문장에서 마스킹된 단어를 예측하기 위해 모델은 주변 영어 단어 또는 프랑스어 번역에 주의를 기울일 수 있으며, 모델이 영어와 프랑스어 표현을 정렬하도록 장려한다. 특히 영어 문맥이 마스킹된 영어 단어를 추론하기에 충분하지 않을 경우 모델은 프랑스어 문맥을 활용할 수 있다. 정렬을 용이하게 하기 위해 target 문장의 위치도 재설정한다. <br><br>
+  ![tlm](https://user-images.githubusercontent.com/86700191/191895601-5cae9263-e94d-434c-adf8-d47240627bb4.PNG)
   <br><br>
-  - Cross-lingual Language Models
+  - Cross-lingual Language Models : 3개의 방법으로 pretraining을 진행했다; CLM, MLM, MLM used in combination with TLM. CLM 및 MLM은 256개의 토큰으로 구성된 64개의 연속 문장 스트림으로 구성된 배치로 모델을 훈련한다. 각 반복에서 배치(batch)는 동일한 언어에서 온 문장으로 구성된다. TLM과 함께 사용되는 MLM은 두 가지 목표를 번갈아 가며, 유사한 접근 방식으로 language pairs(언어 쌍)을 샘플링한다.
+<br><br>
+- Cross-lingual language model pretraining
