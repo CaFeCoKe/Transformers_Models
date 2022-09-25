@@ -25,8 +25,25 @@
   - Translation Language Modeling (TLM) : CLM 및 MLM objective는 unsupervised하며 monolingual data(단일 언어)만을 필요로 한다. 하지만 사용 가능한 병렬 데이터를 활용하질 못한다. cross-lingual pretraining을 개선하기 위해 새로운 translation language modeling (TLM)을 만들었다.
   TLM objective는 monolingual text stream를 고려하는 대신 병렬 문장을 연결하는 MLM의 확장이다. source 및 target 문장 모두에서 단어를 무작위로 마스킹한다. <br>
   예를 들어 영어 문장에서 마스킹된 단어를 예측하기 위해 모델은 주변 영어 단어 또는 프랑스어 번역에 주의를 기울일 수 있으며, 모델이 영어와 프랑스어 표현을 정렬하도록 장려한다. 특히 영어 문맥이 마스킹된 영어 단어를 추론하기에 충분하지 않을 경우 모델은 프랑스어 문맥을 활용할 수 있다. 정렬을 용이하게 하기 위해 target 문장의 위치도 재설정한다. <br><br>
-  ![tlm](https://user-images.githubusercontent.com/86700191/191895601-5cae9263-e94d-434c-adf8-d47240627bb4.PNG)
+  ![TLM_](https://user-images.githubusercontent.com/86700191/191912543-980ba0a0-2081-4ff6-8d6b-8e4723eba11c.PNG)
   <br><br>
   - Cross-lingual Language Models : 3개의 방법으로 pretraining을 진행했다; CLM, MLM, MLM used in combination with TLM. CLM 및 MLM은 256개의 토큰으로 구성된 64개의 연속 문장 스트림으로 구성된 배치로 모델을 훈련한다. 각 반복에서 배치(batch)는 동일한 언어에서 온 문장으로 구성된다. TLM과 함께 사용되는 MLM은 두 가지 목표를 번갈아 가며, 유사한 접근 방식으로 language pairs(언어 쌍)을 샘플링한다.
 <br><br>
-- Cross-lingual language model pretraining
+- Cross-lingual language model pretraining : cross-lingual language model을 사용하여 다음을 얻을 수 있는 방법을 설명한다.
+  1. zero-shot cross-lingual classification를 위한 문장 인코더의 더 나은 초기화
+  2. supervised, unsupervised neural machine translation(지도, 비지도 신경망 기계 번역) 시스템의 더 나은 초기화
+  3. low-resource languages(저자원 언어)에 대한 언어 모델
+  4. unsupervised cross-lingual word embedding(비지도 교차 언어 단어 임베딩)
+  <br><br>
+  - Cross-lingual classification : pretrained XLM 모델은 general-purpose cross-lingual text representation(범용 교차 언어 텍스트 표현)을 제공한다. 영어 분류 작업에 대한 monolingual language model을 fine-tuning하는 것과 유사하게 cross-lingual classification benchmark(교차 언어 분류 벤치마크)에서 XLM을 fine-tuning한다. 모델 성능 평가에는 cross-lingual natural language inference (XNLI) dataset를 사용한다.
+  pretrained Transformer의 첫 번째 hidden state위에 linear classifier(선형 분류기)를 추가하고 영어 NLI 학습 데이터 세트의 모든 파라미터를 fine-tuning한다. 그런 다음 15개의 XNLI 언어로 정확한 NLI 예측을 할 수 있는 모델의 용량을 평가한다. <br>
+  ![tabel1](https://user-images.githubusercontent.com/86700191/191938867-8dd280b5-9f1b-493e-9227-4f6f85457875.PNG)
+  <br><br>
+  - Unsupervised Machine Translation
+  <br><br>
+  - Supervised Machine Translation
+  <br><br>
+  - Low-resource language modeling
+  <br><br>
+  - Unsupervised cross-lingual word embeddings
+<br><br>
