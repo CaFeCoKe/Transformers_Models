@@ -39,11 +39,15 @@
   pretrained Transformer의 첫 번째 hidden state위에 linear classifier(선형 분류기)를 추가하고 영어 NLI 학습 데이터 세트의 모든 파라미터를 fine-tuning한다. 그런 다음 15개의 XNLI 언어로 정확한 NLI 예측을 할 수 있는 모델의 용량을 평가한다. <br>
   ![tabel1](https://user-images.githubusercontent.com/86700191/191938867-8dd280b5-9f1b-493e-9227-4f6f85457875.PNG)
   <br><br>
-  - Unsupervised Machine Translation
+  - Unsupervised Machine Translation : Pretraining은 unsupervised neural machine translation (UNMT)(비지도 신경 기계 번역)의 핵심 요소이다. lookup table을 초기화하는 데 사용되는 pretrained crosslingual word embeddings(사전 훈련된 교차 언어 단어 임베딩)의 품질은 UNMT의 성능에 상당한 영향을 미친다.
+  여기에 UNMT의 반복 프로세스를 bootstrap하기 위해 cross-lingual language model을 사용하여 전체 인코더 및 디코더를 pretraining함으로써 한 단계 더 발전시킬 것을 제안한다. "WMT 14 En-Fr", "WMT 16 En-Dr", "WMT 16 En - Ro" 에 대해 평가한다. <br>
+  ![UNMT](https://user-images.githubusercontent.com/86700191/192256839-9962af9f-a3b2-4e8b-bffe-694b8047a113.PNG)
   <br><br>
-  - Supervised Machine Translation
+  - Supervised Machine Translation : supervised machine translation(지도 기계 번역)을 위한 cross-lingual language modeling pretraining의 영향을 조사하고, 접근 방식을 다국어 NMT로 확장한다. CLM과 MLM pretraining이 "WMT 16 En-Ro"에 미치는 영향을 평가한다. <br>
+  ![SMT](https://user-images.githubusercontent.com/86700191/192256845-7725f70a-6d8e-40d4-a08c-c9262e799e32.PNG)
   <br><br>
   - Low-resource language modeling
   <br><br>
   - Unsupervised cross-lingual word embeddings
 <br><br>
+  - 
