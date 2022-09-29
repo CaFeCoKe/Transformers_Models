@@ -64,7 +64,10 @@
   단어를 subword unit으로 분할하고 BPE codes를 학습 하기 위해 fastBPE6를 사용한다. BPE codes는 모든 언어에서 샘플링된 문장의 연결에서 학습된다.
   <br><br>
   - Results and analysis
-    - Cross-lingual classification
+    - Cross-lingual classification <br>
+    ![cross-lingual_result](https://user-images.githubusercontent.com/86700191/192981569-a23386e2-c687-4c5a-86c2-10fdab9943b1.PNG) <br><br>
+    두 가지 유형의 pretrained cross-lingual encoders를 평가한다: monolingual corpora만에 대해서만 MLM 목표를 사용하는 unsupervised cross-lingual language model 그리고 추가 병렬 데이터를 사용하여 MLM과 TLM 손실을 모두 결합하는 supervised cross-lingual language model. 또한, 두 가지 기계 번역 기준선을 포함한다: 영어 MultiNLI 훈련 세트가 각 XNLI 언어로 기계 번역되는 TRANSLATETRAIN 그리고 XNLI의 모든 개발 및 테스트 세트가 영어로 번역되는 TRANSLATER-TEST. <br>
+    fully unsupervised MLM 방법은 zero-shot cross-lingual classification에 대한 2억 2,300만 개의 병렬 문장을 사용하는 Artetxe와 Schwenk의 supervised 접근방식을 크게 능가한다. 각 XNLI 언어(TRANSLATE-TRAIN)의 훈련 세트에서 fine-tune된 경우, 논문의 supervised model은 zero shot 접근방식을 능가하여 XLM이 강력한 성능과 함께 모든 언어에서 fine-tune 될 수 있음을 보여준다.
     <br><br>
     - Unsupervised machine translation
     <br><br>
