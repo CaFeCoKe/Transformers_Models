@@ -56,10 +56,12 @@
 - Experiments and results : cross-lingual language model pretraining이 여러 벤치마크에 미치는 강한 영향을 empirically하게(실증적으로) 보여주고, 현 논문의 접근 방식을 현재 SOTA와 비교한다.
   - Training details : 1024 hidden units, 8 heads, GELU activation, 0.1 rate의 dropout, learned positional embeddings가 있는 Transformer architecture를 사용한다. 또한, Adam optimizer, linear warmup, 1e-4에서 5e-4까지의 learning rate를 사용하여 모델을 훈련한다. <br>
   CLM 및 MLM 목표를 위해 256개 토큰의 스트림과 64 size의 mini batch를 사용한다. 이때의 mini batch는 두 개 이상의 연속된 문장을 포함할 수 있다. TLM 목표를 위해 유사한 길이의 문장으로 구성된 4000개의 토큰의 mini batch를 샘플링한다. 이 논문에서는 언어에 대한 평균적인 perplexity를 훈련의 중지 기준으로 사용한다. 기계 번역은 6개의 layer를 사용하고, 2000개의 토큰의 mini batch를 사용한다. <br>
-  XNLI에서 fine-tuning할 때, 8 또는 16 크기의 mini batch를 사용하고, 문장 길이를 256단어로 잘라낸다. 80k BPE 분할과 95k의 어휘를 사용하고 XNLI 언어의 위키백과에서 12-layer model을 훈련한다. 5e-4에서 2e-4 까지의 값으로 Adam optimizer의 learning rate를 샘플링하고 20000 random sample의 evaluation epochs를 갖는다.
+  XNLI에서 fine-tuning할 때, 8 또는 16 크기의 mini batch를 사용하고, 문장 길이를 256단어로 잘라낸다. 80k BPE 분할과 95k의 어휘를 사용하고 XNLI 언어의 Wikipedia에서 12-layer model을 훈련한다. 5e-4에서 2e-4 까지의 값으로 Adam optimizer의 learning rate를 샘플링하고 20000 random sample의 evaluation epochs를 갖는다.
   임의로 초기화된 final linear classifier(최종 선형 분류기)에 대한 입력으로 transformer의 마지막 layer의 첫 번째 hidden state를 사용하고 모든 파라미터를 fine-tuning한다. 현 실험에서 마지막 layer에 대해 max-pooling 또는 mean-pooling을 사용하는 것이 첫 번째 hidden state를 사용하는 것보다 더 잘 작동하지 않았다. 마지막으로 훈련 속도를 높이고 모델의 메모리 사용량을 줄이기 위해 float16 연산을 사용한다.
   <br><br>
-  - Data preprocessing
+  - Data preprocessing : WikiExtractor2를 사용하여 Wikipedia dump에서 원시 문장을 추출하고 CLM 및 MLM 목표에 대한 monolingual data(단일 언어 데이터)로 사용한다. TLM 목표를 위해 영어를 포함하는 병렬 데이터만 사용한다. 정확하게 프랑스어, 스페인어, 러시아어, 아랍어 및 중국어에는 MultiUN을 사용하고, 힌두어에는 IIT Bombay corpus를 사용한다.
+  OPUS 3 website Tiedemann에서 다음과 같은 corpora를 추출한다: EUbookshop corpus에서는 독일어, 그리스어 및 불가리아어, OpenSubtitles 2018에서는 터키어, 베트남어 및 태국어, Tanzil에서는 우르두어와 스와힐리어, GlobalVoices에서는 스와힐리어를 추출하였다. 중국어, 일본어는 Kytea4 tokenizer를 태국어는 PyThaiNLP5 tokenizer를 사용하고 다른 모든 언어의 경우 Moses가 제공한 tokenizer와 필요할 때 default English tokenizer를 사용한다.
+  단어를 subword unit으로 분할하고 BPE codes를 학습 하기 위해 fastBPE6를 사용한다. BPE codes는 모든 언어에서 샘플링된 문장의 연결에서 학습된다.
   <br><br>
   - Results and analysis
     - Cross-lingual classification
