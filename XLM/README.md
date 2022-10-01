@@ -65,16 +65,19 @@
     두 가지 유형의 pretrained cross-lingual encoders를 평가한다: monolingual corpora만에 대해서만 MLM 목표를 사용하는 unsupervised cross-lingual language model 그리고 추가 병렬 데이터를 사용하여 MLM과 TLM 손실을 모두 결합하는 supervised cross-lingual language model. 또한, 두 가지 기계 번역 기준선을 포함한다: 영어 MultiNLI 훈련 세트가 각 XNLI 언어로 기계 번역되는 TRANSLATETRAIN 그리고 XNLI의 모든 개발 및 테스트 세트가 영어로 번역되는 TRANSLATER-TEST. <br>
     fully unsupervised MLM 방법은 zero-shot cross-lingual classification에 대한 2억 2,300만 개의 병렬 문장을 사용하는 Artetxe와 Schwenk의 supervised 접근방식을 크게 능가한다. 각 XNLI 언어(TRANSLATE-TRAIN)의 훈련 세트에서 fine-tune된 경우, 논문의 supervised model은 zero shot 접근방식을 능가하여 XLM이 강력한 성능과 함께 모든 언어에서 fine-tune 될 수 있음을 보여준다.
     <br><br>
-    - Unsupervised machine translation
+    - Unsupervised machine translation <br>
     ![UNMT](https://user-images.githubusercontent.com/86700191/192256839-9962af9f-a3b2-4e8b-bffe-694b8047a113.PNG) <br><br>
+    unsupervised machine translation task의 경우 영어-프랑스어, 영어-독일어, 영어-로마니아어 3개 언어 쌍을 고려한다. lookup table만 아닌 전체 모델을 pretrain하기 위해 cross-lingual language modeling을 사용하는 초기화 단계를 제외한다. <br>
+    인코더와 디코더 모두에 대해 가능한 다른 초기화(CLM pretraining, MLM pretraining, random initialization 등)를 고려하며, 이는 9가지 설정을 야기한다. 그런 다음 online back-translation loss(온라인 역번역 손실)과 함께 denoising auto-encoding loss(노이즈 제거 자동 인코딩 손실)로 모델을 훈련시킨다. 이전 연구의 접근 방식인 NMT 접근 방식을 다시 구현했고, 훨씬 더 큰 배치를 사용하는 다중 GPU 구현 때문에 이전의 연구 결과보다 더 나은 성능을 보였다. 
+    이전의 연구와 CLM objective 보다 MLM objective를 훈련 시킬때 더 나은 성능을 보였다. 또한, 이 연구 결과에서 인코더가 pretraining에서 가장 중요한 요소라는 것을 보여준다. 인코더와 디코더 모두를 사전 교육하는 것과 비교할 때, 디코더만 pretrain하면 성능이 크게 저하되고, 인코더만 pretrain하면 최종 BLEU 점수에 미치는 영향은 미미했기 때문이다.
     <br><br>
-    - Supervised machine translation
+    - Supervised machine translation <br>
     ![SMT](https://user-images.githubusercontent.com/86700191/192256845-7725f70a-6d8e-40d4-a08c-c9262e799e32.PNG) <br><br>
     <br><br>
-    - Low-resource language model
+    - Low-resource language model <br>
     ![Nepali_LM](https://user-images.githubusercontent.com/86700191/192460120-c94f5527-a71f-499f-834e-d34961ee6259.PNG) <br><br>
     <br><br>
-    - Unsupervised cross-lingual word embeddings
+    - Unsupervised cross-lingual word embeddings <br>
     ![cross-ligual_word_embedding](https://user-images.githubusercontent.com/86700191/192460192-cdde25ed-f9a2-4688-a8bc-3d81eb33e1db.PNG) <br><br>
 <br><br>
 - Conclusion
