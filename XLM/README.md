@@ -73,6 +73,8 @@
     <br><br>
     - Supervised machine translation <br>
     ![SMT](https://user-images.githubusercontent.com/86700191/192256845-7725f70a-6d8e-40d4-a08c-c9262e799e32.PNG) <br><br>
+    단방향(ro→en), 양방향(en→ro, ro→en 모두에 대해 훈련된 다중 NMT 모델(ro↔en)) 및 역번역이 있는 양방향(ro↔en + BT)등 다양한 supervised training 구성에 대한 루마니아-영어 WMT'16의 성능을 보여준다. 역번역을 사용하는 모델은 pretraining에 사용되는 언어 모델과 동일한 monolingual data로 훈련한다.
+    unsupervised setting과 마찬가지로 pretraining이 각 구성에 대한 BLEU 점수를 크게 상승시키고 MLM objective를 가진 pretraining이 최상의 성능으로 이어진다는 것을 보여준다. 역번역이 있는 모델은 pretrain된 모델과 동일한 양의 monolingual data에 액세스할 수 있지만 평가 세트에서 일반화할 수 없다. 역번역으로 훈련된 양방향 모델은 최고의 성능을 보여준다.
     <br><br>
     - Low-resource language model <br>
     ![Nepali_LM](https://user-images.githubusercontent.com/86700191/192460120-c94f5527-a71f-499f-834e-d34961ee6259.PNG) <br><br>
