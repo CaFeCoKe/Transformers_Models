@@ -73,11 +73,14 @@
     <br><br>
     - Supervised machine translation <br>
     ![SMT](https://user-images.githubusercontent.com/86700191/192256845-7725f70a-6d8e-40d4-a08c-c9262e799e32.PNG) <br><br>
-    단방향(ro→en), 양방향(en→ro, ro→en 모두에 대해 훈련된 다중 NMT 모델(ro↔en)) 및 역번역이 있는 양방향(ro↔en + BT)등 다양한 supervised training 구성에 대한 루마니아-영어 WMT'16의 성능을 보여준다. 역번역을 사용하는 모델은 pretraining에 사용되는 언어 모델과 동일한 monolingual data로 훈련한다.
+    단방향(ro->en), 양방향(en->ro, ro->en 모두에 대해 훈련된 다중 NMT 모델(ro<->en)) 및 역번역이 있는 양방향(ro<->en + BT)등 다양한 supervised training 구성에 대한 루마니아-영어 WMT'16의 성능을 보여준다. 역번역을 사용하는 모델은 pretraining에 사용되는 언어 모델과 동일한 monolingual data로 훈련한다.
     unsupervised setting과 마찬가지로 pretraining이 각 구성에 대한 BLEU 점수를 크게 상승시키고 MLM objective를 가진 pretraining이 최상의 성능으로 이어진다는 것을 보여준다. 역번역이 있는 모델은 pretrain된 모델과 동일한 양의 monolingual data에 액세스할 수 있지만 평가 세트에서 일반화할 수 없다. 역번역으로 훈련된 양방향 모델은 최고의 성능을 보여준다.
     <br><br>
     - Low-resource language model <br>
     ![Nepali_LM](https://user-images.githubusercontent.com/86700191/192460120-c94f5527-a71f-499f-834e-d34961ee6259.PNG) <br><br>
+    네팔어 모델의 perplexity를 개선하기 위해 cross-lingual language modeling의 영향을 알아낸다. 이를 위해 영어와 힌두어의 추가 데이터와 함께 Wikipedia로 네팔어 모델을 훈련시킨다. 네팔어와 영어는 먼 언어이지만, 네팔어와 힌두어는 같은 데바나가리 문자를 공유하고 산스크리트어의 원형을 공유한다는 점에서 유사하다.<br>
+    영어 데이터를 사용할 때 네팔어 모델의 perplexity은 네팔어 전용 언어 모델링보다 낮아졌고, 힌두어의 추가 데이터를 사용할 때에는 perplexity가 더 크게 낮아지는 것을 볼 수 있다. 마지막으로 영어와 힌두어 데이터를 모두 활용할 때 perplexity가 가장 많이 낮아진 것을 볼 수 있다. <br>
+    cross-lingual language modeling으로 인한 perplexity의 이점은 Wikipedia 기사와 같이 언어 간에 공유되는 n-grams anchor points로 부분적으로 설명할 수 있다. cross-lingual language model은 힌두어 또는 영어 monolingual corpora로 이루어진 추가 컨텍스트를 네팔 언어 모델을 개선하기 위해 이러한 앵커 포인트를 통해 전송할 수 있다.
     <br><br>
     - Unsupervised cross-lingual word embeddings <br>
     ![cross-ligual_word_embedding](https://user-images.githubusercontent.com/86700191/192460192-cdde25ed-f9a2-4688-a8bc-3d81eb33e1db.PNG) <br><br>
