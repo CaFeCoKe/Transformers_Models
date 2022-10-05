@@ -36,15 +36,14 @@
   4. unsupervised cross-lingual word embedding(비지도 교차 언어 단어 임베딩)
   <br><br>
   - Cross-lingual classification : pretrained XLM 모델은 general-purpose cross-lingual text representation(범용 교차 언어 텍스트 표현)을 제공한다. 영어 분류 작업에 대한 monolingual language model을 fine-tuning하는 것과 유사하게 cross-lingual classification benchmark(교차 언어 분류 벤치마크)에서 XLM을 fine-tuning한다. 모델 성능 평가에는 cross-lingual natural language inference (XNLI) dataset를 사용한다.
-  pretrained Transformer의 첫 번째 hidden state위에 linear classifier(선형 분류기)를 추가하고 영어 NLI 학습 데이터 세트의 모든 파라미터를 fine-tuning한다. 그런 다음 15개의 XNLI 언어로 정확한 NLI 예측을 할 수 있는 모델의 용량을 평가한다. <br>
-  ![tabel1](https://user-images.githubusercontent.com/86700191/191938867-8dd280b5-9f1b-493e-9227-4f6f85457875.PNG)
+  pretrained Transformer의 첫 번째 hidden state위에 linear classifier(선형 분류기)를 추가하고 영어 NLI 학습 데이터 세트의 모든 파라미터를 fine-tuning한다. 그런 다음 15개의 XNLI 언어로 정확한 NLI 예측을 할 수 있는 모델의 용량을 평가한다.
   <br><br>
   - Unsupervised Machine Translation : Pretraining은 unsupervised neural machine translation (UNMT)(비지도 신경 기계 번역)의 핵심 요소이다. lookup table을 초기화하는 데 사용되는 pretrained crosslingual word embeddings(사전 훈련된 교차 언어 단어 임베딩)의 품질은 UNMT의 성능에 상당한 영향을 미친다.
-  여기에 UNMT의 반복 프로세스를 bootstrap하기 위해 cross-lingual language model을 사용하여 전체 인코더 및 디코더를 pretraining함으로써 한 단계 더 발전시킬 것을 제안한다. "WMT 14 En-Fr", "WMT 16 En-Dr", "WMT 16 En - Ro" 에 대해 평가한다. <br>
+  여기에 UNMT의 반복 프로세스를 bootstrap하기 위해 cross-lingual language model을 사용하여 전체 인코더 및 디코더를 pretraining함으로써 한 단계 더 발전시킬 것을 제안한다. "WMT 14 En-Fr", "WMT 16 En-Dr", "WMT 16 En - Ro" 에 대해 평가한다.
   <br><br>
-  - Supervised Machine Translation : supervised machine translation(지도 기계 번역)을 위한 cross-lingual language modeling pretraining의 영향을 조사하고, 접근 방식을 다국어 NMT로 확장한다. CLM과 MLM pretraining이 "WMT 16 En-Ro"에 미치는 영향을 평가한다. <br>
+  - Supervised Machine Translation : supervised machine translation(지도 기계 번역)을 위한 cross-lingual language modeling pretraining의 영향을 조사하고, 접근 방식을 다국어 NMT로 확장한다. CLM과 MLM pretraining이 "WMT 16 En-Ro"에 미치는 영향을 평가한다.
   <br><br>
-  - Low-resource language modeling : vocabulary의 상당 부분을 공유할 때 higher-resource languages의 데이터를 활용하는 것이 종종 도움이 된다. Wikipedia에는 100k 문장 정도의 네팔어가 있고 힌두어는 약 6배정도 더 많다. 또한, 두 개의 언어는 약 80% 정도의 100k subword units의 BPE vocab을 공유한다. 네팔어 언어 모델, 힌두어를 조합한 언어 모델, 힌두어와 영어를 조합한 언어 모델을 가지고 perplexity를 비교한다. <br>
+  - Low-resource language modeling : vocabulary의 상당 부분을 공유할 때 higher-resource languages의 데이터를 활용하는 것이 종종 도움이 된다. Wikipedia에는 100k 문장 정도의 네팔어가 있고 힌두어는 약 6배정도 더 많다. 또한, 두 개의 언어는 약 80% 정도의 100k subword units의 BPE vocab을 공유한다. 네팔어 언어 모델, 힌두어를 조합한 언어 모델, 힌두어와 영어를 조합한 언어 모델을 가지고 perplexity를 비교한다. 
   <br><br>
   - Unsupervised cross-lingual word embeddings : 이전의 연구들에서 monolingual word embedding spaces(단일 언어 단어 임베딩 공간)을 adversarial training(적대적 훈련)과 함게 정렬하여 unsupervised word translation(비지도 단어 번역)을 수행하는 방법을 보여주었으며, 또한 두 언어 간의 공유 어휘를 사용한 다음 monolingual corpora(단일 언어 말뭉치)연결에 fastText를 적용하는 것도 공통 알파벳을 공유하는 언어에 대한 high-quality cross-lingual word embedding(고품질 교차 언어 단어 임베딩) (Concat)을 직접 제공한다는 것도 보여주었다.
   이 논문에서는 공유 어휘를 사용하지만 단어 임베딩은 cross-lingual language model (XLM)의 lookup table을 통해 얻는다. 이 접근방식들을 cosine similarity, L2 distance, cross-lingual word similarity의 세 가지 metrics에 대해 비교한다<br>
@@ -84,5 +83,7 @@
     <br><br>
     - Unsupervised cross-lingual word embeddings <br>
     ![cross-ligual_word_embedding](https://user-images.githubusercontent.com/86700191/192460192-cdde25ed-f9a2-4688-a8bc-3d81eb33e1db.PNG) <br><br>
+    MUSE, Concat 및 XLM(MLM)은 서로 다른 특성을 가진 unsupervised cross-lingual word embedding spaces을 제공한다. 동일한 단어 어휘를 사용하여 이 세 가지 방법을 연구하고 MUSE 사전에서 단어 번역 쌍 간의 cosine similarity(코사인 유사성)과 L2 distance를 계산한다. 또한, Camacho-Collados et al의 SemEval'17 cross-lingual word similarity task을 통해 cosine similarity의 품질을 평가한다.
+    XLM이 MUSE와 Concaton의 cross-lingual word similarity를 모두를 능가한다는 것을 볼 수 있다. 또한 XLM crosslingual word embedding space에서 MUSE 와 Concat보다 단어 번역 쌍이 L2 distance가 훨씬 더 가깝다. 이는 XLM 임베딩이 근접성을 강제할 수 있는 문장 인코더와 함께 훈련되는 특수성을 가지고 있는 반면, MUSE와 Concat는 빠른 텍스트 단어 임베딩을 기반으로 하기 때문이다.
 <br><br>
 - Conclusion
