@@ -46,7 +46,7 @@
   - Low-resource language modeling : vocabulary의 상당 부분을 공유할 때 higher-resource languages의 데이터를 활용하는 것이 종종 도움이 된다. Wikipedia에는 100k 문장 정도의 네팔어가 있고 힌두어는 약 6배정도 더 많다. 또한, 두 개의 언어는 약 80% 정도의 100k subword units의 BPE vocab을 공유한다. 네팔어 언어 모델, 힌두어를 조합한 언어 모델, 힌두어와 영어를 조합한 언어 모델을 가지고 perplexity를 비교한다. 
   <br><br>
   - Unsupervised cross-lingual word embeddings : 이전의 연구들에서 monolingual word embedding spaces(단일 언어 단어 임베딩 공간)을 adversarial training(적대적 훈련)과 함게 정렬하여 unsupervised word translation(비지도 단어 번역)을 수행하는 방법을 보여주었으며, 또한 두 언어 간의 공유 어휘를 사용한 다음 monolingual corpora(단일 언어 말뭉치)연결에 fastText를 적용하는 것도 공통 알파벳을 공유하는 언어에 대한 high-quality cross-lingual word embedding(고품질 교차 언어 단어 임베딩) (Concat)을 직접 제공한다는 것도 보여주었다.
-  이 논문에서는 공유 어휘를 사용하지만 단어 임베딩은 cross-lingual language model (XLM)의 lookup table을 통해 얻는다. 이 접근방식들을 cosine similarity, L2 distance, cross-lingual word similarity의 세 가지 metrics에 대해 비교한다<br>
+  이 논문에서는 공유 어휘를 사용하지만 단어 임베딩은 cross-lingual language model (XLM)의 lookup table을 통해 얻는다. 이 접근방식들을 cosine similarity, L2 distance, cross-lingual word similarity의 세 가지 metrics에 대해 비교한다.
 <br><br>
 - Experiments and results : cross-lingual language model pretraining이 여러 벤치마크에 미치는 강한 영향을 empirically하게(실증적으로) 보여주고, 현 논문의 접근 방식을 현재 SOTA와 비교한다.
   - Training details : 1024 hidden units, 8 heads, GELU activation, 0.1 rate의 dropout, learned positional embeddings가 있는 Transformer architecture를 사용한다. 또한, Adam optimizer, linear warmup, 1e-4에서 5e-4까지의 learning rate를 사용하여 모델을 훈련한다. <br>
@@ -86,4 +86,6 @@
     MUSE, Concat 및 XLM(MLM)은 서로 다른 특성을 가진 unsupervised cross-lingual word embedding spaces을 제공한다. 동일한 단어 어휘를 사용하여 이 세 가지 방법을 연구하고 MUSE 사전에서 단어 번역 쌍 간의 cosine similarity(코사인 유사성)과 L2 distance를 계산한다. 또한, Camacho-Collados et al의 SemEval'17 cross-lingual word similarity task을 통해 cosine similarity의 품질을 평가한다.
     XLM이 MUSE와 Concaton의 cross-lingual word similarity를 모두를 능가한다는 것을 볼 수 있다. 또한 XLM crosslingual word embedding space에서 MUSE 와 Concat보다 단어 번역 쌍이 L2 distance가 훨씬 더 가깝다. 이는 XLM 임베딩이 근접성을 강제할 수 있는 문장 인코더와 함께 훈련되는 특수성을 가지고 있는 반면, MUSE와 Concat는 빠른 텍스트 단어 임베딩을 기반으로 하기 때문이다.
 <br><br>
-- Conclusion
+  - Conclusion : cross-lingual language model (XLM) pretraining의 강한 영향을 보여준다. monolingual corpora만 필요한 두가지 unsupervised training objectives인 Causal Language Modeling(CLM)과 Masked Language Modeling(MLM)을 조사하여 pretraining model에 사용할 수 있는 강력한 cross-lingual 기능을 제공한다는 것을 알수 있다. unsupervised machine translation경우 MLM pretraining이 매우 효과적이라는 것을 보여준다. <br>
+  마찬가지로 supervised machine translation에서도 WMT'16 루마니아어-영어에서 SOTA를 달성하는 등 강력한 개선을 얻는다. 언어 모델은 unsupervised cross-lingual word embeddings을 제공하며, 단일 병렬 문장을 사용하지 않고 XNLI cross-lingual classification benchmark로 fine-tune된 cross-lingual language model은 이전의 기술보다 더 좋은 정확도를 보인다. <br>
+  본 논문은 특히 병렬 데이터를 활용하여 crosslingual language model pretraining을 개선하는 translation language modeling (TLM) objective가 핵심적이다. TLM은 연속 문장 대신 병렬 문장 배치를 사용하여 자연스럽게 BERT의 MLM 접근 방식을 확장한다. TLM을 사용하여 상당한 이득을 얻으며, supervised approach가 XNLI의 이전 기술보다 더 좋은 정확도를 기록한다.
