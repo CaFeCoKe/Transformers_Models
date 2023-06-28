@@ -1,4 +1,4 @@
-# XLNet (Generalized Autoregressive Pretraining for Language Understanding)
+# XLNet : Generalized Autoregressive Pretraining for Language Understanding
 
 - Introduction : Unsupervised representation learning은 NLP 분야에서 좋은 성과를 내고 있다. 이 방법은 먼저 방대한 양의 unlabeled된 text corpora로 신경망을 pre-training한 후 downstream task에 맞게 모델이나 representation을 fine-tune하는 것이다. Pre-training 단계에서도 여러 objective들이 이용되어 왔는데, 그 중 가장 대표적인 두 가지를 소개한다.
   - Autoregressive (AR) : 일반적인 Language Model (LM)의 학습 방법으로 이전 token들을 보고 다음 token을 예측하는 방식이다. text sequence가 주어지면 AR 모델은 likelihood를 forward/backward(순방향/역방향)로 각 conditional distribution(조건부 분포)를 모델링하도록 훈련된다.<br>

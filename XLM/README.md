@@ -1,4 +1,4 @@
-# XLM (Cross-lingual Language Model Pretraining)
+# XLM (Cross-lingual Language Model) : Cross-lingual Language Model Pretraining
 
 - Introduction : large unsupervised text corpus이 학습되고 자연어 이해(NLU) 작업에 대해 미세 조정된 Transformer 언어 모델이 나온 이후 general-purpose sentence representations(범용 문장 표현)에 대한 관심이 급증했지만 대부분 하나의 언어(특히 영어)에만 초점이 맞춰지고 있다.
 많은 언어에서 cross-lingual sentence representations(교차 언어 문장 표현)을 학습하고 평가하는 최근의 발전은 영어 중심 bias(편향)를 완화하는 것을 목표로 하며, 임의의 문장을 shared embedding space(공유 임베딩 공간)으로 인코딩할 수 있는 universal cross-lingual encoder(범용 교차 언어 인코더)를 구축하는 것이 가능하다는 것을 시사한다. <br>

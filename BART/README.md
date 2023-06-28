@@ -1,4 +1,4 @@
-# BART (Bidirectional Auto-Regressive Transformer)
+# BART (Bidirectional Auto-Regressive Transformer) : Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension
 
 - Abstract & Introduction : Self-supervised methods은 다양한 NLP tasks에서 놀라운 성공을 거두었다. 가장 성공적인 접근 방식은 단어의 무작위 subset(하위 집합)이 마스킹된 텍스트를 재구성하도록 훈련된 denoising autoencoder인 MLM(masked language model)의 변형들이다. 그러나 이러한 방법은 일반적으로 특정 유형의 end tasks에 초점을 맞춰 활용성이 떨어진다는 단점이 있다.<br>
 BART는 Bidirectional Transformers와 Auto-Regressive Transformers를 결합한 모델을 pretrain하며, 매우 광범위한 end tasks에 적용할 수 있는 sequence-to-sequence 모델로 구축된 denoising autoencoder이다. arbitrary noising function으로 텍스트를 손상(corrupting)시키고, 원본 텍스트를 재구성하기 위해 sequence-to-sequence 모델을 학습하며, 표준 트랜스포머 기반 신경 기계 번역 아키텍처를 사용함으로써 BERT(bidirectional encoder), GPT(left-to-right decoder), 최신 pretraining schemes를 일반화하는 것으로 볼 수 있다.(아래 그림 참조) <br>

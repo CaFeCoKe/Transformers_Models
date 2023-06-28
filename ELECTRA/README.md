@@ -1,4 +1,4 @@
-# ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately)
+# ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately) : Pre-training Text Encoders as Discriminators Rather Than Generators
 
 - 주요 배경(아이디어) :  Masked Language Modeling(MLM) 사전 훈련 방법은 일부 토큰을 [MASK]로 대체하여 입력을 손상시킨 다음 모델을 훈련하여 원래 토큰을 재구성하는 방식이다. 다운스트림 NLP 작업으로 전송될 때 좋은 결과를 얻지만 일반적으로 효과적이려면 많은 양의 컴퓨팅이 필요하다는 단점이 존재한다. <br>
 이러한 단점을 보완하기 위해 replaced token detection라는 보다 sample-efficient인 pre-training 방법을 제안한다. 이 방법은 입력을 마스킹하는 대신 일부 토큰을 소형 발전기 네트워크에서 샘플링된 그럴듯한 대안으로 교체하여 입력을 손상시킨다. 그런 다음 손상된 토큰의 원래 정체를 예측하는 모델을 훈련하는 대신, 우리는 예측되는 discriminative model을 훈련하는 방식이다.
